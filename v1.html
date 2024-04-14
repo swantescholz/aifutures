@@ -69,6 +69,7 @@
         border: 1px solid black;
         text-align: center;
         padding: 5px;
+        max-width: 100px;
         transform: translate(-50%, -50%);
     }
     .edge-label {
@@ -102,26 +103,68 @@
 
 // NORMAL nodes first! then the rest!
 let nodesStr = `
-s;start;500;-200;<u>START</u>|<u>HERE</u>
-a;ai winter;1000;100;AI winter
-n;agi possible?;500;0;Is AGI possible?
-i;agi possible!;500;100;AGI is possible!
-n;agi century;500;200;Can we build|AGI this century?
-n;agi aligned;500;400;Will we|align AGI?
-c;ai catastrophe;0;300;pre-AGI|catastrophe
-g;agi utopia;800;500;AGI utopia
-e;agi xrisk;0;500;AGI existential|catastrophe
+e;econflicting-agi-xrisk;4;4;Extinction from conflicting AGIs
+a;aconflicting-agi-survive;6;4;Uncertain future among conflicting AGIs
+s;sstart;8;4;<u>START</u>|<u>HERE</u>
+n;nconflicting-agi-survive;4;6;Will humanity survive among conflicting AGIs?
+e;enon-ai-xrisk;6;6;Extinction from non-AI catastrophe
+n;nnon-ai-catastrophe;8;6;Non-AI catastrophe occurs soon (e.g. nuclear war)?
+n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
+a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned.
+n;nnon-ai-recover;6;8;Humanity recovers from non-AI catastrophe?
+i;iresearch-continues;8;8;AI research continues
+i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential.
+i;iconflicting-agis;4;10;Conflicting AGIs
+a;aai-winter;6;10;Permanent AI winter
+n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
+c;ccatastrophy-occurs;10;10;pre-AGI catastrophe does occur!
+n;ntry-stop2;12;10;Humanity decides to permanently stop frontier AI development (after catastrophe)?
+n;nagis-collaborate;4;12;Will AGIs collaborate with each other?
+n;nprevent-other-agis;6;12;Will the first AGI prevent other AGIs to appear?
+a;anon-transformative-agi;8;12;Powerful, but not transformative AGI.
+n;ncatastrophe;10;12;AI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
+n;ntry-slow;12;12;Humanity agrees to advance AI only extremely carefully to avoid risks?
+n;nalignment-theory;6;14;Have we solved AGI alignment in theory?
+n;nagi-transformative;8;14;Is AGI transformative?
+i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
+n;nenforce-slow;12;14;Can Humanity enforce this slow/careful approach globally?
+i;ialigned-agi;4;16;Aligned AGI
+n;nimplement-alignment;6;16;Do AI labs implement alignment correclty?
+i;imisaligned-agi;8;16;Misaligned AGI
+g;gagi-utopia;12;16;(Slightly delayed) AGI utopia
+n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
+n;ncontrollers-thoughtful;6;18;Are AGI controllers thoughtful regarding unintended consequences?
+n;nfigure-misaligned;8;18;Do we figure out it's misaligned?
+n;nturn-off;10;18;Can we easily turn it off?
+a;asecond-chance;12;18;We get a second chance at building AGI
+g;gagi-utopia2;4;20;AGI utopia
+n;ncontrollers-good;6;20;Do AGI controllers have good intentions?
+n;nagi-protects;8;20;Does AGI protect its users?
+n;nharming-us;10;20;Is it harming us?
+n;ncan-destroy-it;12;20;Can we destroy it?
+e;eauthoritarian-dystopia;6;22;Authoritarian dystopia
+e;estupid-xrisk;8;22;Accidental/stupid human extinction
+e;emedium-dystopia;10;22;Medium-scale dystopia
+n;nbenefit-extinction;12;22;Does it benefit from our extinction?
+e;esuffering;8;24;Astronomical suffering
+n;nbenefit-suffering;10;24;Does it benefit from our suffering?
+e;eagi-kills-us;12;24;AGI-initiated human extinction
 `.trim();
 
 let edgesStr = `
--;start;agi possible?
-y;agi possible?;agi possible!
--;agi possible!;agi century
-n;agi possible?;ai winter
-y;agi century;agi aligned
-n;agi century;ai catastrophe
-y;agi aligned;agi utopia
-n;agi aligned;agi xrisk
+-;sstart;nnon-ai-catastrophe
+y;nnon-ai-catastrophe;nnon-ai-recover
+n;nnon-ai-catastrophe;ntry-stop1
+y;ntry-stop1;adune
+n;ntry-stop1;iresearch-continues
+y;nnon-ai-recover;iresearch-continues
+n;nnon-ai-recover;enon-ai-xrisk
+-;iresearch-continues;ncapabilities-improve
+y;ncapabilities-improve;ireach-catastrophic-potential
+n;ncapabilities-improve;aai-winter
+-;ireach-catastrophic-potential;ccatastrophy-occurs
+-;ccatastrophy-occurs;ntry-stop2
+y;ntry-stop2;adune
 `.trim();
 
 // Edge types
@@ -139,8 +182,7 @@ const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
 
 // Other constants
-const XSCALE = 0.7;
-const YSCALE = 0.8;
+const XSCALE = 1.0;
 const SLIDER_DEFAULT_VALUE = 50;
 const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
 const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, CATASTROPHIC, INTERMEDIATE, NORMAL];
@@ -155,15 +197,15 @@ class Node {
         this.id = parts[1];
         this.type = parts[0];
         this.x = parseFloat(parts[2]) * XSCALE;
-        this.y = parseFloat(parts[3]) * YSCALE;
+        this.y = parseFloat(parts[3]);
         this.text = parts[4].replace('|', '\n');
         this.p = 1.0; // total probability flow going into this node.
     }
 }
 const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 800;
+const CANVAS_WIDTH = 1200;
+const CANVAS_HEIGHT = 1200;
 function initNodes() {
     let nodes = nodesStr.split('\n').map(line => new Node(line));
     let minX = Number.POSITIVE_INFINITY, minY = Number.POSITIVE_INFINITY;
@@ -220,6 +262,7 @@ document.write(`
     <br>Legend/glossary. 
     <br>Explain sliders use conditional probabilities.
     <br>Define catastrophic risks.
+    <br>add authors, and link to source code. mention unlicense, so people know they may modify etc.
 `);
 
 // ================================ SHARING / EXPORT
@@ -228,7 +271,7 @@ document.write(`
 <h2>Share this page:</h2>
     <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
     <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
-    <button onclick="shareOnTwitter()" class="shareButton">Share on Twitter</button>
+    <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
 </div>
 `);
 // ================================ ROW 1
@@ -375,6 +418,7 @@ function updateProbabilities() {
         let p = 1.0;
         if (edge.yn !== E100) {
             let pSlider = sliderProbs[normalNodesIndices.indexOf(edge.source)];
+            mycheck(pSlider, `No slider value for node ${edge.source} from edge ${eIndex}`);
             p = edge.yn === YES ? pSlider : 1.0 - pSlider;
         }
         console.log('pEdge', eIndex, p, pParent);
