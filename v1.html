@@ -82,6 +82,7 @@
     }
     .bgs { background-color: rgb(114, 158, 240);}
     .bgn { background-color: rgb(255, 255, 255); }
+    .bgi { background-color: rgb(168, 191, 171); }
     .bgg { background-color: rgb(97, 247, 115); }
     .bga { background-color: rgb(244, 244, 99); }
     .bgc { background-color: rgb(234, 138, 49); }
@@ -101,20 +102,22 @@
 
 // NORMAL nodes first! then the rest!
 let nodesStr = `
-n;agi possible;500;0;Is AGI possible?
+s;start;500;-200;<u>START</u>|<u>HERE</u>
+a;ai winter;1000;100;AI winter
+n;agi possible?;500;0;Is AGI possible?
+i;agi possible!;500;100;AGI is possible!
 n;agi century;500;200;Can we build|AGI this century?
 n;agi aligned;500;400;Will we|align AGI?
-s;start;500;-200;<u>START</u>|<u>HERE</u>
 c;ai catastrophe;0;300;pre-AGI|catastrophe
 g;agi utopia;800;500;AGI utopia
-a;ai winter;1000;100;AI winter
 e;agi xrisk;0;500;AGI existential|catastrophe
 `.trim();
 
 let edgesStr = `
--;start;agi possible
-y;agi possible;agi century
-n;agi possible;ai winter
+-;start;agi possible?
+y;agi possible?;agi possible!
+-;agi possible!;agi century
+n;agi possible?;ai winter
 y;agi century;agi aligned
 n;agi century;ai catastrophe
 y;agi aligned;agi utopia
@@ -133,13 +136,14 @@ const GOOD = 'g';
 const AMBIVALENT = 'a';
 const CATASTROPHIC = 'c';
 const EXISTENTIAL = 'e';
+const INTERMEDIATE = 'i';
 
 // Other constants
 const XSCALE = 0.7;
 const YSCALE = 0.8;
 const SLIDER_DEFAULT_VALUE = 50;
-const TABLE_NODE_TYPES = [EXISTENTIAL, CATASTROPHIC, AMBIVALENT, GOOD, NORMAL];
-const TABLE_HEADERS = ["Existential Catastrophe", "Non-existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Intermediate State (propability<br>of *entering* this state)"];
+const TABLE_NODE_TYPES = [EXISTENTIAL, CATASTROPHIC, AMBIVALENT, GOOD, INTERMEDIATE, NORMAL];
+const TABLE_HEADERS = ["Existential Catastrophe", "Non-existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
 
 let gNodeIndex = 0;
 
@@ -188,6 +192,8 @@ class Edge {
         this.yn = parts[0];
         this.source = id2index.get(parts[1]);
         this.target = id2index.get(parts[2]);
+        mycheck(this.source, `Unknown node: ${parts[1]}`);
+        mycheck(this.target, `Unknown node: ${parts[2]}`);
         this.p = 0.0; // total probability flow going through the edge.
     }
 }
@@ -228,7 +234,7 @@ nodes.map(node => {
 </div>`);
 });
 edges.map((edge, index) => {
-    document.write(`<div id="edge-label${index}" class="edge-label">${edge.yn}</div>`);
+    document.write(`<div id="edge-label${index}" class="edge-label">${edge.yn === E100 ? "" : edge.yn}</div>`);
 });
 document.write(`</div>`); // /canvas-container
 document.write(`<div id=slider-container-outer>`); // slider
@@ -358,7 +364,7 @@ function updateProbabilities() {
         if (np.has(nIndex)) {
             return np.get(nIndex);
         }
-        let p = adj.get(nIndex).map(eIndex => pEdge(eIndex)).reduce((a, b) => a + b, 0.0);
+        let p = (adj.get(nIndex)||[]).map(eIndex => pEdge(eIndex)).reduce((a, b) => a + b, 0.0);
         np[nIndex] = p;
         nodes[nIndex].p = p;
         return p;
@@ -519,6 +525,11 @@ function shareOnTwitter() {
 function getUrl() {
     return encodeURIComponent(window.location.href);
     // return encodeURIComponent('https://swantescholz.github.io/aidoom/v1.html');
+}
+function mycheck(value, message) {
+    if (value === null || value === undefined) {
+        throw new Error('Value is null or undefined. Error message: ' + message);
+    }
 }
 window.onload = function () {
     let urlParam = new URLSearchParams(window.location.search).get('p') || '';
