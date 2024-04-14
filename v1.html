@@ -142,8 +142,9 @@ const INTERMEDIATE = 'i';
 const XSCALE = 0.7;
 const YSCALE = 0.8;
 const SLIDER_DEFAULT_VALUE = 50;
-const TABLE_NODE_TYPES = [EXISTENTIAL, CATASTROPHIC, AMBIVALENT, GOOD, INTERMEDIATE, NORMAL];
-const TABLE_HEADERS = ["Existential Catastrophe", "Non-existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
+const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
+const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, CATASTROPHIC, INTERMEDIATE, NORMAL];
+const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Non-existential Catastrophe", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
 
 let gNodeIndex = 0;
 
@@ -272,7 +273,7 @@ document.write(`</div>`); // /layoutRow1
 document.write(`<div id="layoutRow2">`);
 for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
     document.write(`<table class="bg${TABLE_NODE_TYPES[i]}"><tr><th>${TABLE_HEADERS[i]}</th><th class="ralign">[%]</th></tr>`);
-        if (TABLE_NODE_TYPES[i] !== NORMAL) {
+        if (TABLE_NODE_TYPES_WITH_TOTAL.includes(TABLE_NODE_TYPES[i])) {
             document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="pTableTotalForType${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
         } 
     nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(node => {
@@ -398,7 +399,7 @@ function updateTables() {
         }
     }
     for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
-        if (TABLE_NODE_TYPES[i] === NORMAL) {
+        if (!TABLE_NODE_TYPES_WITH_TOTAL.includes(TABLE_NODE_TYPES[i])) {
             continue;
         }
         let total = nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(n => n.p).reduce((a, b) => a + b, 0.0);
