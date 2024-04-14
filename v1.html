@@ -39,9 +39,7 @@
     input[type="range"] {
         flex-grow: 1; /* Allows the slider to fill the rest of the container */
     }
-    #mainContent {
-        border: 1px solid black;
-    }
+    #mainContent {}
     #layoutRow1 {
         display: flex;
         align-items: center; 
@@ -203,7 +201,6 @@ edges.map((edge, eIndex) => {
     adj.get(edge.target).push(eIndex);
 });
 // ================================ HEADER 
-// Write lorem ipsum text
 document.write(`
 <div id="mainContent">
     <h1>Map of AI Doom</h1>
@@ -218,9 +215,6 @@ document.write(`
 // ================================ ROW 1
 
 document.write(`<div id="layoutRow1">`);
-    
-    document.write(`<p>foobar</p>`);
-    
 document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
     document.write(`<canvas s></canvas>`);
 nodes.map(node => {
@@ -515,8 +509,8 @@ function shareOnTwitter() {
     window.open(twUrl, '_blank');
 }
 function getUrl() {
-    // return encoreURIComponent(window.location.href);
-    return encodeURIComponent('https://www.example.com');
+    return encoreURIComponent(window.location.href);
+    // return encodeURIComponent('https://www.example.com');
 }
 window.onload = function () {
     let urlParam = new URLSearchParams(window.location.search).get('p') || '';
