@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Map of AI Doom</title>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
     body, html {
         height: 100%;
-        margin: 0;
+        margin: 10px;
         font-family: Arial, sans-serif;
         font-size: smaller;
     }
@@ -40,6 +39,9 @@
     input[type="range"] {
         flex-grow: 1; /* Allows the slider to fill the rest of the container */
     }
+    #mainContent {
+        border: 1px solid black;
+    }
     #layoutRow1 {
         display: flex;
         align-items: center; 
@@ -62,6 +64,7 @@
     #shareRow {
         display: flex;
         align-items: center; 
+        margin: 10px;
     }
     .node {
         position: absolute;
@@ -89,6 +92,9 @@
         width: 100%;
         display: flex;         /* Aligns children (slider and textbox) in a row */
         align-items: center;     /* Centers the children vertically */
+    }
+    .shareButton {
+        margin: 10px;
     }
 </style>
 </head>
@@ -275,10 +281,12 @@ document.write(`</div>`); // /mainContent
 // ================================ SHARING / EXPORT
 document.write(`
 <div id="shareRow">
-    <button onclick="exportAsPNG()">Export as PNG</button>
+<h2>Share this page:</h2>
+    <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
+    <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
+    <button onclick="shareOnTwitter()" class="shareButton">Share on Twitter</button>
 </div>
 `);
-
 const canvas = document.querySelector('canvas');
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
@@ -490,16 +498,26 @@ function setSlidersFromString(s) {
     }
     updateEverything();
 }
-function exportAsPNG() {
-    const content = document.getElementById('mainContent');
-    html2canvas(document.body).then(canvas => {
-        const image = canvas.toDataURL("image/png");
-        const link = document.createElement('a');
-        link.download = 'my-ai-doom-map.png';
-        link.href = image;
-        link.click();
+function copyUrlToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(function() {
+        alert('URL copied to clipboard');
+    }, function(err) {
+        alert('Failed to copy URL to clipboard');
     });
-} 
+}
+function shareOnFacebook() {
+    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${getUrl()}`;
+    window.open(fbUrl, '_blank');
+}
+function shareOnTwitter() {
+    const twUrl = `https://twitter.com/intent/tweet?text=Check out this cool interactive graph about catastrophic AI risks!&url=${getUrl()}`;
+    window.open(twUrl, '_blank');
+}
+function getUrl() {
+    // return encoreURIComponent(window.location.href);
+    return encodeURIComponent('https://www.example.com');
+}
 window.onload = function () {
     let urlParam = new URLSearchParams(window.location.search).get('p') || '';
     setSlidersFromString(urlParam);
