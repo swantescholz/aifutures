@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Map of AI Doom</title>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
     body, html {
         height: 100%;
@@ -57,6 +58,10 @@
         padding: 10px;
         border: 1px solid black;
         flex-shrink: 0;
+    }
+    #shareRow {
+        display: flex;
+        align-items: center; 
     }
     .node {
         position: absolute;
@@ -194,12 +199,14 @@ edges.map((edge, eIndex) => {
 // ================================ HEADER 
 // Write lorem ipsum text
 document.write(`
+<div id="mainContent">
     <h1>Map of AI Doom</h1>
     Legend/glossary. Link to e.g. AGI wikipedia entry?
 
     Say that sliders are conditional on that state being entered in the graph!
     Say that this is a simplified model and were likely wrong about various things.
     Define catastrophic risks, e.g. as covid level (death toll or economic impact) or worse
+    Add website link to the bottom of the page. (so it's part of screenshots)
 `);
 
 // ================================ ROW 1
@@ -264,10 +271,18 @@ for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
     document.write(`</table>`);
 }
 document.write(`</div>`); // /layoutRow2
+document.write(`</div>`); // /mainContent
+// ================================ SHARING / EXPORT
+document.write(`
+<div id="shareRow">
+    <button onclick="exportAsPNG()">Export as PNG</button>
+</div>
+`);
+
 const canvas = document.querySelector('canvas');
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
-    const ctx = canvas.getContext('2d');
+canvas.width = CANVAS_WIDTH;
+canvas.height = CANVAS_HEIGHT;
+const ctx = canvas.getContext('2d');
 // ================================ FUNCTIONS
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
 const toPercentString = p => (p*100).toFixed(1);
@@ -473,7 +488,18 @@ function setSlidersFromString(s) {
         slider.value = parseInt(parts[i]) || SLIDER_DEFAULT_VALUE;
         textbox.value = slider.value;
     }
+    updateEverything();
 }
+function exportAsPNG() {
+    const content = document.getElementById('mainContent');
+    html2canvas(document.body).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.download = 'my-ai-doom-map.png';
+        link.href = image;
+        link.click();
+    });
+} 
 window.onload = function () {
     let urlParam = new URLSearchParams(window.location.search).get('p') || '';
     setSlidersFromString(urlParam);
