@@ -104,7 +104,7 @@
 
 // NORMAL nodes first! then the rest!
 let nodesStr = `
-s;sstart;8;4;<u>START</u>|<u>HERE</u>
+s;sstart;8;4;START|HERE
 n;nnon-ai-catastrophe;8;6;Non-AI catastrophe occurs soon (e.g. nuclear war)?
 n;nnon-ai-recover;6;8;Humanity recovers from non-AI catastrophe?
 e;enon-ai-xrisk;6;6;Extinction from non-AI catastrophe
@@ -114,9 +114,9 @@ i;iresearch-continues;8;8;AI research continues
 n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential.
-n;ncatastrophe;10;10;AI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
+n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
 c;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
-n;ntry-stop2;12;10;Humanity decides to permanently stop frontier AI development (after catastrophe)?
+n;ntry-stop2;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
 n;ntry-slow;12;12;Humanity agrees to advance AI only extremely carefully to avoid risks?
 n;nenforce-slow;12;14;Can Humanity enforce this slow/careful approach globally?
 g;gagi-utopia;12;16;(Slightly delayed) AGI utopia
@@ -174,8 +174,8 @@ y;nenforce-slow;gagi-utopia
 n;nenforce-slow;iagi-exists
 n;ncatastrophe;iagi-exists
 -;iagi-exists;nagi-transformative
-y;nagi-transformative;anon-transformative-agi
-n;nagi-transformative;nprevent-other-agis
+n;nagi-transformative;anon-transformative-agi
+y;nagi-transformative;nprevent-other-agis
 n;nprevent-other-agis;nagis-collaborate
 y;nprevent-other-agis;nalignment-theory
 y;nagis-collaborate;iconflicting-agis
@@ -345,8 +345,8 @@ document.write(`<div id=slider-container-outer>`); // slider
     <input type="checkbox" id="transparentPathsCheckbox" onclick="updateEverything()" checked>
 </div>
 <hr>
-<button onclick="setSlidersFromString('50i50i50')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('81i21i73')">Author's estimates</button>
+<button onclick="setSlidersFromString('')">Reset all to 50%</button>
+<button onclick="setSlidersFromString('4i80i1i90i55i10i30i10i97i60i70i3i75i70i50i80i90i75i25i5i80i6i92i2')">Author's estimates</button>
 <hr>
 `);
 
