@@ -99,11 +99,12 @@
 <body>
 <script>
 
-// start first, then normal nodes, then the rest!
+// NORMAL nodes first! then the rest!
 let nodesStr = `
-s;agi possible;500;0;<u>START</u>|Is AGI possible?
+n;agi possible;500;0;Is AGI possible?
 n;agi century;500;200;Can we build|AGI this century?
 n;agi aligned;500;400;Will we|align AGI?
+s;start;500;-200;<u>START</u>|<u>HERE</u>
 c;ai catastrophe;0;300;pre-AGI|catastrophe
 g;agi utopia;800;500;AGI utopia
 a;ai winter;1000;100;AI winter
@@ -111,6 +112,7 @@ e;agi xrisk;0;500;AGI existential|catastrophe
 `.trim();
 
 let edgesStr = `
+-;start;agi possible
 y;agi possible;agi century
 n;agi possible;ai winter
 y;agi century;agi aligned
@@ -122,6 +124,7 @@ n;agi aligned;agi xrisk
 // Edge types
 const YES = 'y';
 const NO = 'n';
+const E100 = '-';
 
 // Node types:
 const NORMAL = 'n';
@@ -177,6 +180,7 @@ let id2index = new Map();
 nodes.map((node, index) => {
     id2index.set(node.id, index);
 });
+const normalNodesIndices = nodes.filter(n => n.type === NORMAL).map(n => n.index);
 
 class Edge {
     constructor(line) {
@@ -189,7 +193,7 @@ class Edge {
 }
 
 let edges = edgesStr.split('\n').map(line => new Edge(line));
-const Q = nodes.filter(n => n.type === NORMAL || n.type === START).length;
+const Q = normalNodesIndices.length;
 const N = nodes.length;
 const E = edges.length;
 
@@ -249,7 +253,7 @@ document.write(`<div id=slider-container-outer>`); // slider
 
 for (let i = 0; i < Q; i++) {
     document.write(`
-<p style="padding-left: 5px">${nodes[i].text.replace("START", "").trim()}</p>
+<p style="padding-left: 5px">${nodes[normalNodesIndices[i]].text.trim()}</p>
 <div class="slider-container-inner"> 
     <input type="range" id="slider${i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
     <input type="number" id="slidernumberbox${i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
@@ -347,7 +351,8 @@ function updateProbabilities() {
     for (let i = 0; i < Q; i++) {
         sliderProbs.push(parseInt(document.getElementById('slider' + i).value)/100.0);
     }
-    let np = new Map([[0, 1.0]]);
+    const startNodeIndex = nodes.findIndex(n => n.type === START);
+    let np = new Map([[startNodeIndex, 1.0]]);
     let ep = new Map();
     function pNode(nIndex) {
         if (np.has(nIndex)) {
@@ -364,8 +369,11 @@ function updateProbabilities() {
         }
         let edge = edges[eIndex];
         let pParent = pNode(edge.source);
-        let pSlider = sliderProbs[edge.source];
-        let p = edge.yn === YES ? pSlider : 1.0 - pSlider;
+        let p = 1.0;
+        if (edge.yn !== E100) {
+            let pSlider = sliderProbs[normalNodesIndices.indexOf(edge.source)];
+            p = edge.yn === YES ? pSlider : 1.0 - pSlider;
+        }
         console.log('pEdge', eIndex, p, pParent);
         p *= pParent;
         ep.set(eIndex, p);
