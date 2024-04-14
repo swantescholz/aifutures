@@ -509,8 +509,8 @@ function shareOnTwitter() {
     window.open(twUrl, '_blank');
 }
 function getUrl() {
-    return encoreURIComponent(window.location.href);
-    // return encodeURIComponent('https://www.example.com');
+    return encodeURIComponent(window.location.href);
+    // return encodeURIComponent('https://swantescholz.github.io/aidoom/v1.html');
 }
 window.onload = function () {
     let urlParam = new URLSearchParams(window.location.search).get('p') || '';
