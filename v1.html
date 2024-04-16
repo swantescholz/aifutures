@@ -8,7 +8,8 @@
     body, html {
         height: 100%;
         margin: 10px;
-        font-family: Arial, sans-serif;
+        /* font-family: Arial, sans-serif; */
+        font-family: monospace;
         font-size: smaller;
     }
     canvas {
@@ -70,8 +71,9 @@
         border: 1px solid black;
         text-align: center;
         padding: 5px;
-        max-width: 100px;
+        width: 100px;
         transform: translate(-50%, -50%);
+        box-sizing: border-box;
     }
     .edge-label {
         position: absolute;
