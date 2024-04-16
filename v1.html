@@ -299,7 +299,8 @@ edges.map((edge, eIndex) => {
     }
     adj.get(edge.target).push(eIndex);
 });
-const idPTableTotalForType = 'pTableTotalForType'; 
+const idPTableTotalForType = 'pTableTotalForType';
+let probabilityRootNodeIndex = nodes.findIndex(n => n.type === START);
 // ================================ HEADER 
 document.write(`
 <div id="mainContent">
@@ -328,7 +329,7 @@ document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; heig
     document.write(`<canvas s></canvas>`);
 nodes.map(node => {
     document.write(`
-<div id="node${node.index}" class="node bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;">
+<div id="node${node.index}" class="node bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">
     ${node.text.replace(/\n/g, '<br>')}
 </div>`);
 });
@@ -420,6 +421,10 @@ function interpolateFast(p, min, max) {
     p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
     return min + (max - min) * p; // linear interpolation between min and max
 }
+function handleNodeClick(index) {
+    probabilityRootNodeIndex = index;
+    updateEverything();
+}
 function updateEverything() {
     updateUrl();
     updateProbabilities();
@@ -444,8 +449,8 @@ function updateProbabilities() {
     for (let i = 0; i < Q; i++) {
         sliderProbs.push(parseInt(document.getElementById('slider' + i).value)/100.0);
     }
-    const startNodeIndex = nodes.findIndex(n => n.type === START);
-    let np = new Map([[startNodeIndex, 1.0]]);
+    nodes[probabilityRootNodeIndex].p = 1.0;
+    let np = new Map([[probabilityRootNodeIndex, 1.0]]);
     let ep = new Map();
     function pNode(nIndex) {
         if (np.has(nIndex)) {
@@ -476,7 +481,10 @@ function updateProbabilities() {
     }
     for (let i = 0; i < N; i++) {
         pNode(i);
-    }    
+    }
+    for (let i = 0; i < E; i++) {
+        pEdge(i);
+    }     
 }
 function updateTables() {
     for (let i = 0; i < N; i++) {
@@ -501,6 +509,11 @@ function updateNodeStyles() {
         var borderWidth = toNodeBorderWidth(nodes[i].p);
         nodeDiv.style.borderWidth = borderWidth + 'px';
         nodeDiv.style.padding = (NODE_BORDER_WIDTH_PLUS_PADDING - borderWidth) + 'px';
+        if (i == probabilityRootNodeIndex) {
+            nodeDiv.style.borderColor = 'orange';
+        } else {
+            nodeDiv.style.borderColor = 'black';
+        }
     }
 }
 function drawArrows() {
