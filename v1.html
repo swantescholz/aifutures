@@ -70,7 +70,6 @@
         position: absolute;
         border: 1px solid black;
         text-align: center;
-        padding: 5px;
         width: 100px;
         transform: translate(-50%, -50%);
         box-sizing: border-box;
@@ -233,6 +232,7 @@ const SLIDER_DEFAULT_VALUE = 50;
 const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
 const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, CATASTROPHIC, INTERMEDIATE, NORMAL];
 const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Non-existential Catastrophe", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
+const NODE_BORDER_WIDTH_PLUS_PADDING = 8;
 
 let gNodeIndex = 0;
 
@@ -299,7 +299,7 @@ edges.map((edge, eIndex) => {
     }
     adj.get(edge.target).push(eIndex);
 });
-
+const idPTableTotalForType = 'pTableTotalForType'; 
 // ================================ HEADER 
 document.write(`
 <div id="mainContent">
@@ -369,7 +369,7 @@ document.write(`<div id="layoutRow2">`);
 for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
     document.write(`<table class="bg${TABLE_NODE_TYPES[i]}"><tr><th>${TABLE_HEADERS[i]}</th><th class="ralign">[%]</th></tr>`);
         if (TABLE_NODE_TYPES_WITH_TOTAL.includes(TABLE_NODE_TYPES[i])) {
-            document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="pTableTotalForType${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
+            document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="${idPTableTotalForType}${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
         } 
     nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(node => {
         document.write(`<tr><td>${node.text}</td><td class="tablePercent"><p id="pNodeCell${node.index}">0.0</p></td></tr>`);
@@ -393,25 +393,25 @@ function toAlpha(p) {
 }
 function toArrowWidth(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
-        return interpolateFast(p, 1, 5);
+        return Math.round(interpolateFast(p, 1, 5));
+        }
+        return 2;
     }
-    return 2;
-}
-function toArrowHeadLen(p) {
-    if (document.getElementById('boldPathsCheckbox').checked) {
-        return interpolateFast(p, 8, 25);
+    function toArrowHeadLen(p) {
+        if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 8, 25));
+        }
+        return 12;
     }
-    return 12;
-}
-function toNodeBorderWidth(p) {
-    if (document.getElementById('boldPathsCheckbox').checked) {
-        return interpolateFast(p, 1, 5);
+    function toNodeBorderWidth(p) {
+        if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 1, 5));
+        }
+        return 2;
     }
-    return 2;
-}
-function toFontWeight(p) {
-    if (document.getElementById('boldPathsCheckbox').checked) {
-        return interpolateFast(p, 100, 900);
+    function toFontWeight(p) {
+        if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 100, 900));
     }
     return 400;
 }
@@ -498,7 +498,9 @@ function updateNodeStyles() {
         let nodeDiv = document.getElementById(`node${i}`);
         nodeDiv.style.opacity = toAlpha(nodes[i].p);
         nodeDiv.style.fontWeight = toFontWeight(nodes[i].p);
-        nodeDiv.style.borderWidth = toNodeBorderWidth(nodes[i].p) + 'px';
+        var borderWidth = toNodeBorderWidth(nodes[i].p);
+        nodeDiv.style.borderWidth = borderWidth + 'px';
+        nodeDiv.style.padding = (NODE_BORDER_WIDTH_PLUS_PADDING - borderWidth) + 'px';
     }
 }
 function drawArrows() {
