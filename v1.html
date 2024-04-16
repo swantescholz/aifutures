@@ -498,7 +498,7 @@ function updateTables() {
             continue;
         }
         let total = nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(n => n.p).reduce((a, b) => a + b, 0.0);
-        document.getElementById('pTableTotalForType' + TABLE_NODE_TYPES[i]).innerText = toPercentString(total);
+        document.getElementById(idPTableTotalForType + TABLE_NODE_TYPES[i]).innerText = toPercentString(total);
     }
 }
 function updateNodeStyles() {
