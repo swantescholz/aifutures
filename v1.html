@@ -406,7 +406,7 @@ function toNodeBorderWidth(p) {
     }
     return 2;
 }
-function toNodeFontWeight(p) {
+function toFontWeight(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return interpolateFast(p, 100, 900);
     }
@@ -494,7 +494,7 @@ function updateNodeStyles() {
     for (let i = 0; i < N; i++) {
         let nodeDiv = document.getElementById(`node${i}`);
         nodeDiv.style.opacity = toAlpha(nodes[i].p);
-        nodeDiv.style.fontWeight = toNodeFontWeight(nodes[i].p);
+        nodeDiv.style.fontWeight = toFontWeight(nodes[i].p);
         nodeDiv.style.borderWidth = toNodeBorderWidth(nodes[i].p) + 'px';
     }
 }
@@ -574,12 +574,13 @@ function updateEdgeLabel(i, x1, y1, x2, y2) {
     let dx = y2 - y1;
     let dy = x1 - x2;
     const norm = Math.sqrt(dx*dx + dy*dy);
-    const offset = 8 + toArrowWidth(edges[i].p) * 0.5
+    const offset = 10;
     dx = dx / norm * offset;
     dy = dy / norm * offset;
     edgeLabel.style.left = dx + (x1 + x2) / 2 + 'px';
     edgeLabel.style.top = dy + (y1 + y2) / 2 + 'px';
     edgeLabel.style.opacity = toAlpha(edges[i].p);
+    edgeLabel.style.fontWeight = toFontWeight(edges[i].p);
 }
 function setSlidersFromString(s) {
     let parts = s.split('i');
