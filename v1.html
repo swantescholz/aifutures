@@ -394,23 +394,23 @@ function toAlpha(p) {
 function toArrowWidth(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 1, 5));
-        }
-        return 2;
     }
-    function toArrowHeadLen(p) {
-        if (document.getElementById('boldPathsCheckbox').checked) {
+    return 2;
+}
+function toArrowHeadLen(p) {
+    if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 8, 25));
-        }
-        return 12;
     }
-    function toNodeBorderWidth(p) {
-        if (document.getElementById('boldPathsCheckbox').checked) {
+    return 12;
+}
+function toNodeBorderWidth(p) {
+    if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 1, 5));
-        }
-        return 2;
     }
-    function toFontWeight(p) {
-        if (document.getElementById('boldPathsCheckbox').checked) {
+    return 2;
+}
+function toFontWeight(p) {
+    if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 100, 900));
     }
     return 400;
