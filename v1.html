@@ -8,7 +8,6 @@
     body, html {
         height: 100%;
         margin: 10px;
-        /* font-family: Arial, sans-serif; */
         font-family: monospace;
         font-size: smaller;
     }
@@ -630,7 +629,7 @@ function shareOnFacebook() {
     window.open(fbUrl, '_blank');
 }
 function shareOnTwitter() {
-    const twUrl = `https://twitter.com/intent/tweet?text=Check out this cool interactive graph about catastrophic AI risks!&url=${getUrl()}`;
+    const twUrl = `https://twitter.com/intent/tweet?&url=${getUrl()}`;
     window.open(twUrl, '_blank');
 }
 function getUrl() {
