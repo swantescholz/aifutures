@@ -93,7 +93,6 @@
     .bgi { background-color: rgb(168, 191, 171); }
     .bgg { background-color: rgb(97, 247, 115); }
     .bga { background-color: rgb(244, 244, 99); }
-    .bgc { background-color: rgb(234, 138, 49); }
     .bge { background-color: rgb(223, 94, 55); }
     .slider-container-inner {
         width: 100%;
@@ -121,7 +120,7 @@ n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential.
 n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
-c;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
+i;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
 n;ntry-stop2;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
 n;ntry-slow;12;12;Humanity agrees to advance AI only extremely carefully to avoid risks?
 n;nenforce-slow;12;14;Can Humanity enforce this slow/careful approach globally?
@@ -227,7 +226,6 @@ const NORMAL = 'n';
 const START = 's';
 const GOOD = 'g';
 const AMBIVALENT = 'a';
-const CATASTROPHIC = 'c';
 const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
 
@@ -235,8 +233,8 @@ const INTERMEDIATE = 'i';
 const XSCALE = 1.0;
 const SLIDER_DEFAULT_VALUE = 50;
 const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
-const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, CATASTROPHIC, INTERMEDIATE, NORMAL];
-const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Non-existential Catastrophe", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
+const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, INTERMEDIATE, NORMAL];
+const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
 
 let gNodeIndex = 0;
 
