@@ -66,13 +66,19 @@
         align-items: center; 
         margin: 10px;
     }
-    .node {
+    .nodeBox {
         position: absolute;
         border: 1px solid black;
-        text-align: center;
         width: 100px;
         transform: translate(-50%, -50%);
         box-sizing: border-box;
+        opacity: 0;
+    }
+    .nodeText {
+        position: absolute;
+        text-align: center;
+        width: 84px;
+        transform: translate(-50%, -50%);
     }
     .edge-label {
         position: absolute;
@@ -232,7 +238,6 @@ const SLIDER_DEFAULT_VALUE = 50;
 const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
 const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD, CATASTROPHIC, INTERMEDIATE, NORMAL];
 const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome", "Non-existential Catastrophe", "Intermediate State", "Question Nodes (propability<br>of *entering* this node)"];
-const NODE_BORDER_WIDTH_PLUS_PADDING = 8;
 
 let gNodeIndex = 0;
 
@@ -299,7 +304,9 @@ edges.map((edge, eIndex) => {
     }
     adj.get(edge.target).push(eIndex);
 });
-const idPTableTotalForType = 'pTableTotalForType';
+const idPTableTotalForType = 'idPTableTotalForType';
+const idDivNodeBox = 'idDivNodeBox';
+const idDivNodeText = 'idPNodeText';
 let probabilityRootNodeIndex = nodes.findIndex(n => n.type === START);
 // ================================ HEADER 
 document.write(`
@@ -326,19 +333,19 @@ document.write(`
 
 document.write(`<div id="layoutRow1">`);
 document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
-    document.write(`<canvas s></canvas>`);
+document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
-<div id="node${node.index}" class="node bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">
-    ${node.text.replace(/\n/g, '<br>')}
-</div>`);
+    <div id="${idDivNodeBox+node.index}" class="nodeBox bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})"></div>
+    <div id="${idDivNodeText+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/\n/g, '<br>')}</div>
+    `);
 });
 edges.map((edge, index) => {
     document.write(`<div id="edge-label${index}" class="edge-label">${edge.yn === E100 ? "" : edge.yn}</div>`);
 });
 document.write(`</div>`); // /canvas-container
 document.write(`<div id=slider-container-outer>`); // slider
-    // Settings
+    // Settings=================================
     document.write(`
 <div class="slider-container-inner"> 
     <p style="padding-left: 5px">Make more likely paths bolder?</p>
@@ -473,7 +480,6 @@ function updateProbabilities() {
             mycheck(pSlider, `No slider value for node ${edge.source} from edge ${eIndex}`);
             p = edge.yn === YES ? pSlider : 1.0 - pSlider;
         }
-        console.log('pEdge', eIndex, p, pParent);
         p *= pParent;
         ep.set(eIndex, p);
         edges[eIndex].p = p;
@@ -503,16 +509,17 @@ function updateTables() {
 }
 function updateNodeStyles() {
     for (let i = 0; i < N; i++) {
-        let nodeDiv = document.getElementById(`node${i}`);
-        nodeDiv.style.opacity = toAlpha(nodes[i].p);
-        nodeDiv.style.fontWeight = toFontWeight(nodes[i].p);
-        var borderWidth = toNodeBorderWidth(nodes[i].p);
-        nodeDiv.style.borderWidth = borderWidth + 'px';
-        nodeDiv.style.padding = (NODE_BORDER_WIDTH_PLUS_PADDING - borderWidth) + 'px';
+        let nodeBox = document.getElementById(idDivNodeBox+i);
+        let nodeText = document.getElementById(idDivNodeText+i);
+        nodeBox.style.width = (parseFloat(window.getComputedStyle(nodeText).width) + 16) + 'px';
+        nodeBox.style.height =(parseFloat(window.getComputedStyle(nodeText).height) + 16) + 'px';
+        nodeBox.style.opacity = toAlpha(nodes[i].p);
+        nodeText.style.fontWeight = toFontWeight(nodes[i].p);
+        nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p) + 'px';
         if (i == probabilityRootNodeIndex) {
-            nodeDiv.style.borderColor = 'orange';
+            nodeBox.style.borderColor = 'orange';
         } else {
-            nodeDiv.style.borderColor = 'black';
+            nodeBox.style.borderColor = 'black';
         }
     }
 }
@@ -521,8 +528,8 @@ function drawArrows() {
     const canvasRect = document.getElementById(`canvas-container`).getBoundingClientRect()
     for (let i = 0; i < E; i++) {
         const edge = edges[i];
-        const box1 = document.getElementById(`node${edge.source}`);
-        const box2 = document.getElementById(`node${edge.target}`);
+        const box1 = document.getElementById(idDivNodeBox+edge.source);
+        const box2 = document.getElementById(idDivNodeBox+edge.target);
         const rect1 = box1.getBoundingClientRect();
         const rect2 = box2.getBoundingClientRect();
         let x1 = rect1.left - canvasRect.left + rect1.width / 2;
