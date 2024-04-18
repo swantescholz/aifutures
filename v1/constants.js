@@ -121,9 +121,12 @@ const INTERMEDIATE = 'i';
 
 // IDs
 const idTableTotalForTypeP = 'idTableTotalForTypeP';
+const idTableNodeCellP = 'idTableNodeCellP';
 const idNodeBoxDiv = 'idNodeBoxDiv';
 const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
+const idSliderNumberBox = 'idSliderNumberBox';
+const idEdgeLabel = 'idEdgeLabel';
 
 // Other constants
 const XSCALE = 1.0;

@@ -33,7 +33,7 @@ nodes.map(node => {
     `);
 });
 edges.map((edge, index) => {
-    document.write(`<div id="edge-label${index}" class="edge-label">${edge.yn === E100 ? "" : edge.yn}</div>`);
+    document.write(`<div id="${idEdgeLabel+index}" class="edge-label">${edge.yn === E100 ? "" : edge.yn}</div>`);
 });
 document.write(`</div>`); // /canvas-container
 document.write(`<div id=slider-container-outer>`); // slider
@@ -58,7 +58,7 @@ for (let i = 0; i < Q; i++) {
 <p style="padding-left: 5px">${nodes[normalNodesIndices[i]].text.trim()}</p>
 <div class="slider-container-inner"> 
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
-    <input type="number" id="slidernumberbox${i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
+    <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
 </div>
 `);
 }
@@ -72,7 +72,7 @@ for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
             document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="${idTableTotalForTypeP}${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
         } 
     nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(node => {
-        document.write(`<tr><td>${node.text}</td><td class="tablePercent"><p id="pNodeCell${node.index}">0.0</p></td></tr>`);
+        document.write(`<tr><td>${node.text}</td><td class="tablePercent"><p id="${idTableNodeCellP+node.index}">0.0</p></td></tr>`);
     });
     document.write(`</table>`);
 }
@@ -150,7 +150,7 @@ function updateProbabilities() {
 }
 function updateTables() {
     for (let i = 0; i < N; i++) {
-        let cell = document.getElementById('pNodeCell' + i);
+        let cell = document.getElementById(idTableNodeCellP + i);
         if (cell) {
             cell.innerText = toPercentString(nodes[i].p);
         }
@@ -254,14 +254,14 @@ function setSlidersFromString(s) {
     let parts = s.split('i');
     for (let i = 0; i < Q; i++) {
         let slider = document.getElementById(idSliderInput + i);
-        let textbox = document.getElementById('slidernumberbox' + i);
+        let textbox = document.getElementById(idSliderNumberBox + i);
         slider.value = parseInt(parts[i]) || SLIDER_DEFAULT_VALUE;
         textbox.value = slider.value;
     }
     updateEverything();
 }
 function updateEdgeLabel(i, x1, y1, x2, y2) {
-    const edgeLabel = document.getElementById(`edge-label${i}`);
+    const edgeLabel = document.getElementById(idEdgeLabel+i);
     let dx = y2 - y1;
     let dy = x1 - x2;
     const norm = Math.sqrt(dx*dx + dy*dy);
@@ -280,7 +280,7 @@ window.onload = function () {
     // Slider listeners.
     for (let i = 0; i < Q; i++) {
         let slider = document.getElementById(idSliderInput + i);
-        let textbox = document.getElementById('slidernumberbox' + i);
+        let textbox = document.getElementById(idSliderNumberBox + i);
         slider.addEventListener('input', function () {
             textbox.value = slider.value;
             updateEverything();
