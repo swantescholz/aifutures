@@ -1,4 +1,4 @@
-const nodesStr = `
+const NODES_STR = `
 s;sstart;8;4;START|HERE
 n;nnon-ai-catastrophe;8;6;Non-AI catastrophe occurs soon (e.g. nuclear war)?
 n;nnon-ai-recover;6;8;Humanity recovers from non-AI catastrophe?
@@ -47,7 +47,7 @@ e;emedium-dystopia;10;22;Medium-scale dystopia
 e;esuffering;8;24;Astronomical suffering
 `.trim();
 
-const edgesStr = `
+const EDGES_STR = `
 -;sstart;nnon-ai-catastrophe
 y;nnon-ai-catastrophe;nnon-ai-recover
 n;nnon-ai-catastrophe;ntry-stop1
@@ -120,9 +120,10 @@ const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
 
 // IDs
-const idPTableTotalForType = 'idPTableTotalForType';
-const idDivNodeBox = 'idDivNodeBox';
-const idDivNodeText = 'idPNodeText';
+const idTableTotalForTypeP = 'idTableTotalForTypeP';
+const idNodeBoxDiv = 'idNodeBoxDiv';
+const idNodeTextDiv = 'idNodeTextDiv';
+const idSliderInput = 'idSliderInput';
 
 // Other constants
 const XSCALE = 1.0;
