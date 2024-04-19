@@ -33,7 +33,7 @@ nodes.map(node => {
     `);
 });
 edges.map((edge, index) => {
-    document.write(`<div id="${idEdgeLabel+index}" class="edge-label">${edge.yn === E100 ? "" : edge.yn}</div>`);
+    document.write(`<div id="${idEdgeLabel+index}" class="edge-label"></div>`);
 });
 document.write(`</div>`); // /canvas-container
 document.write(`<div id=slider-container-outer>`); // slider
@@ -275,6 +275,12 @@ function updateEdgeLabel(i, x1, y1, x2, y2) {
     edgeLabel.style.top = dy + (y1 + y2) / 2 + 'px';
     edgeLabel.style.opacity = toAlpha(edges[i].p);
     edgeLabel.style.fontWeight = toFontWeight(edges[i].p);
+    let label = edges[i].yn === E100 ? "" : (edges[i].yn+"=")
+    if (edges[i].yn !== E100) { // mytodo
+        const sourceSliderProb = parseInt(document.getElementById(idSliderInput + normalNodesIndices.indexOf(edges[i].source)).value);
+        label += edges[i].yn === YES ? sourceSliderProb : (100-sourceSliderProb);            
+    }
+    edgeLabel.textContent = label;
 }
 
 window.onload = function () {
