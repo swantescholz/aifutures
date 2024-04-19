@@ -81,12 +81,6 @@ input[type="range"] {
     text-align: right;
     width: 30px;
 }
-.bgs { background-color: rgb(114, 158, 240);}
-.bgn { background-color: rgb(255, 255, 255); }
-.bgi { background-color: rgb(168, 191, 171); }
-.bgg { background-color: rgb(97, 247, 115); }
-.bga { background-color: rgb(244, 244, 99); }
-.bge { background-color: rgb(223, 94, 55); }
 .slider-container-inner {
     width: 100%;
     display: flex;         /* Aligns children (slider and textbox) in a row */

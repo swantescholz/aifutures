@@ -106,13 +106,23 @@ const YES = 'y';
 const NO = 'n';
 const E100 = '-';
 
-// Node types:
+// Node types
 const NORMAL = 'n';
 const START = 's';
 const GOOD = 'g';
 const AMBIVALENT = 'a';
 const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
+
+// Map from node type to color
+const COLORS = {
+    [NORMAL]: 'rgb(255, 255, 255)',
+    [START]: 'rgb(114, 158, 240)',
+    [GOOD]: 'rgb(97, 247, 115)',
+    [AMBIVALENT]: 'rgb(244, 244, 99)',
+    [EXISTENTIAL]: 'rgb(223, 94, 55)',
+    [INTERMEDIATE]: 'rgb(168, 191, 171)',
+};
 
 // IDs
 const idTableTotalForTypeP = 'idTableTotalForTypeP';
@@ -122,6 +132,8 @@ const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
 const idSliderNumberBox = 'idSliderNumberBox';
 const idEdgeLabel = 'idEdgeLabel';
+const idDetailPlot = 'idDetailPlot';
+const idTotalPlot = 'idTotalPlot';
 
 // Other constants
 const XSCALE = 1.0;

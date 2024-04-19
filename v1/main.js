@@ -28,7 +28,7 @@ document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; heig
 document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
-    <div id="${idNodeBoxDiv+node.index}" class="nodeBox bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})"></div>
+    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
     <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
@@ -65,7 +65,12 @@ for (let i = 0; i < Q; i++) {
 document.write('</div>'); // /slider
 document.write(`</div>`); // /layoutRow1
 // ================================ ROW 2
-document.write(`<div id="layoutRow2">`);
+document.write(`
+<div id="layoutRow2">
+<div id="${idTotalPlot}" style="width: 900px; height: 500px;"></div>
+<div id="${idDetailPlot}" style="width: 900px; height: 500px;"></div>
+</div>
+`);
 
 document.write(`</div>`); // /layoutRow2
 document.write(`</div>`); // /mainContent
@@ -82,7 +87,6 @@ function handleNodeClick(index) {
 function updateEverything() {
     updateUrl();
     updateProbabilities();
-    updatePlots();
     updateNodeStyles();
     drawArrows();
 }
@@ -138,9 +142,6 @@ function updateProbabilities() {
     for (let i = 0; i < E; i++) {
         pEdge(i);
     }     
-}
-function updatePlots() {
-   
 }
 function updateNodeStyles() {
     for (let i = 0; i < N; i++) {

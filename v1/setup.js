@@ -1,3 +1,4 @@
+
 let gNodeIndex = 0;
 class Node {
     constructor(line) {
