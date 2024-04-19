@@ -49,7 +49,7 @@ document.write(`<div id=slider-container-outer>`); // slider
 </div>
 <hr>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('4i80i1i90i55i10i30i10i97i60i70i3i75i70i50i80i90i75i25i5i80i6i92i2')">Author's estimates</button>
+<button onclick="setSlidersFromString('4i80i1i90i55i10i30i10i97i60i70i3i75i70i50i80i90i25i94i5i90i6')">Author's estimates</button>
 <hr>
 `);
 
