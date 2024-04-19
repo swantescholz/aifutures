@@ -138,9 +138,8 @@ const idTotalPlot = 'idTotalPlot';
 // Other constants
 const XSCALE = 1.0;
 const SLIDER_DEFAULT_VALUE = 50;
-const TABLE_NODE_TYPES_WITH_TOTAL = [EXISTENTIAL, AMBIVALENT, GOOD];
-const TABLE_NODE_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
-const TABLE_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome"];
+const OUTCOME_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
+const OUTCOME_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome"];
 const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
 const CANVAS_WIDTH = 1200;
