@@ -1,8 +1,5 @@
 const NODES_STR = `
 s;sstart;8;4;START|HERE
-n;nnon-ai-catastrophe;8;6;Non-AI catastrophe occurs soon (e.g. nuclear war)?
-n;nnon-ai-recover;6;8;Humanity recovers from non-AI catastrophe?
-e;enon-ai-xrisk;6;6;Extinction from non-AI catastrophe
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
 a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned.
 i;iresearch-continues;8;8;AI research continues
@@ -48,13 +45,9 @@ e;esuffering;8;24;Astronomical suffering
 `.trim();
 
 const EDGES_STR = `
--;sstart;nnon-ai-catastrophe
-y;nnon-ai-catastrophe;nnon-ai-recover
-n;nnon-ai-catastrophe;ntry-stop1
+-;sstart;ntry-stop1
 y;ntry-stop1;adune
 n;ntry-stop1;iresearch-continues
-y;nnon-ai-recover;iresearch-continues
-n;nnon-ai-recover;enon-ai-xrisk
 -;iresearch-continues;ncapabilities-improve
 y;ncapabilities-improve;ireach-catastrophic-potential
 n;ncapabilities-improve;aai-winter
