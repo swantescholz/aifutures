@@ -10,6 +10,12 @@ class Node {
         this.text = parts[4];
         this.p = 1.0; // total probability flow going into this node.
     }
+    formatTextForPlots() {
+        return this.text.replace(/\|/g, ' ');
+    }
+    formatTextForNode() {
+        return this.text.replace(/\|/g, '<br>');
+    }
 }
 
 function initNodes() {

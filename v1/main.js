@@ -29,7 +29,7 @@ document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
     <div id="${idNodeBoxDiv+node.index}" class="nodeBox bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/\|/g, '<br>')} [&nbsp;&nbsp;&nbsp;]</div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
 edges.map((edge, index) => {
@@ -66,16 +66,7 @@ document.write('</div>'); // /slider
 document.write(`</div>`); // /layoutRow1
 // ================================ ROW 2
 document.write(`<div id="layoutRow2">`);
-for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
-    document.write(`<table class="bg${TABLE_NODE_TYPES[i]}"><tr><th>${TABLE_HEADERS[i]}</th><th class="ralign">[%]</th></tr>`);
-        if (TABLE_NODE_TYPES_WITH_TOTAL.includes(TABLE_NODE_TYPES[i])) {
-            document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="${idTableTotalForTypeP}${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
-        } 
-    nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(node => {
-        document.write(`<tr><td>${node.text.replace(/\|/g, ' ')}</td><td class="tablePercent"><p id="${idTableNodeCellP+node.index}">0.0</p></td></tr>`);
-    });
-    document.write(`</table>`);
-}
+
 document.write(`</div>`); // /layoutRow2
 document.write(`</div>`); // /mainContent
 // ================================ FUNCTIONS / LOGIC
@@ -91,7 +82,7 @@ function handleNodeClick(index) {
 function updateEverything() {
     updateUrl();
     updateProbabilities();
-    updateTables();
+    updatePlots();
     updateNodeStyles();
     drawArrows();
 }
@@ -148,20 +139,8 @@ function updateProbabilities() {
         pEdge(i);
     }     
 }
-function updateTables() {
-    for (let i = 0; i < N; i++) {
-        let cell = document.getElementById(idTableNodeCellP + i);
-        if (cell) {
-            cell.innerText = toPercentString(nodes[i].p);
-        }
-    }
-    for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
-        if (!TABLE_NODE_TYPES_WITH_TOTAL.includes(TABLE_NODE_TYPES[i])) {
-            continue;
-        }
-        let total = nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(n => n.p).reduce((a, b) => a + b, 0.0);
-        document.getElementById(idTableTotalForTypeP + TABLE_NODE_TYPES[i]).innerText = toPercentString(total);
-    }
+function updatePlots() {
+   
 }
 function updateNodeStyles() {
     for (let i = 0; i < N; i++) {
