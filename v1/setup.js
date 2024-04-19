@@ -7,7 +7,7 @@ class Node {
         this.type = parts[0];
         this.x = parseFloat(parts[2]) * XSCALE;
         this.y = parseFloat(parts[3]);
-        this.text = parts[4].replace('|', '\n');
+        this.text = parts[4];
         this.p = 1.0; // total probability flow going into this node.
     }
 }

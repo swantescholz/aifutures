@@ -1,5 +1,7 @@
+
+
 const NODES_STR = `
-s;sstart;8;4;START|HERE
+s;sstart;8;4;START|HERE|
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
 a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned.
 i;iresearch-continues;8;8;AI research continues

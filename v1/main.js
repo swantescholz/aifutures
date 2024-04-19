@@ -29,7 +29,7 @@ document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
     <div id="${idNodeBoxDiv+node.index}" class="nodeBox bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/\n/g, '<br>')} [   ]</div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/|/g, '<br>')} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
 edges.map((edge, index) => {
@@ -177,7 +177,9 @@ function updateNodeStyles() {
         } else {
             nodeBox.style.borderColor = 'black';
         }
-        nodeText.textContent = nodeText.textContent.replace(/\[.{3}\]/, `[${Math.round(nodes[i].p*100)}]`);
+        const probString = Math.round(nodes[i].p*100).toString()
+        const paddedPropString = "&nbsp;".repeat(3-probString.length) + probString;
+        nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPropString}]`);
     }
 }
 function drawArrows() {
