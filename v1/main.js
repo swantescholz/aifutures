@@ -29,7 +29,7 @@ document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
     <div id="${idNodeBoxDiv+node.index}" class="nodeBox bg${node.type}" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/|/g, '<br>')} [&nbsp;&nbsp;&nbsp;]</div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.text.replace(/\|/g, '<br>')} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
 edges.map((edge, index) => {
@@ -72,7 +72,7 @@ for (let i = 0; i < TABLE_NODE_TYPES.length; i++) {
             document.write(`<tr><td><b>Total</b></td><td class="tablePercent"><b><p id="${idTableTotalForTypeP}${TABLE_NODE_TYPES[i]}">0.0</p></b></td></tr>`);
         } 
     nodes.filter(n => n.type === TABLE_NODE_TYPES[i]).map(node => {
-        document.write(`<tr><td>${node.text}</td><td class="tablePercent"><p id="${idTableNodeCellP+node.index}">0.0</p></td></tr>`);
+        document.write(`<tr><td>${node.text.replace(/\|/g, ' ')}</td><td class="tablePercent"><p id="${idTableNodeCellP+node.index}">0.0</p></td></tr>`);
     });
     document.write(`</table>`);
 }
