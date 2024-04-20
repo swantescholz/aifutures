@@ -42,6 +42,7 @@ const idNodeBoxDiv = 'idNodeBoxDiv';
 const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
 const idSliderNumberBox = 'idSliderNumberBox';
+const idMinOpacitySlider = 'idMinOpacitySlider';
 const idEdgeLabel = 'idEdgeLabel';
 const idDetailPlot = 'idDetailPlot';
 const idTotalPlot = 'idTotalPlot';
@@ -55,14 +56,15 @@ const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
 const CANVAS_WIDTH = 1200;
 const CANVAS_HEIGHT = 1200;
-const CHART_UPDATE_INTERVAL = 3000;
+const CHART_UPDATE_INTERVAL = 1000;
 
 // ================================ UTILS
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
 const toPercentString = p => (p*100).toFixed((p*100 < 10.0) ? 1 : 0) + '%';
 function toAlpha(p) {
     if (document.getElementById('transparentPathsCheckbox').checked) {
-        return interpolateFast(p, 0.2, 1.0);
+        const minAlpha = parseInt(document.getElementById(idMinOpacitySlider).value) / 100.0;
+        return interpolateFast(p, minAlpha, 1.0);
     }
     return 1.0;
 }
@@ -309,7 +311,7 @@ function setupDetailPlot() {
             return; // no changes
         }
         millis = newMillis;
-        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type)).map(node => {
+        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type) && node.p > 0).map(node => {
             return {
                 p: node.p,
                 text: node.formatTextForPlots(),
@@ -369,8 +371,9 @@ edges.map((edge, index) => {
 });
 document.write(`</div>`); // /canvas-container
 document.write(`<div id=slider-container-outer>`); // slider
-    // Settings=================================
-    document.write(`
+// Settings=================================
+document.write(`
+<h2>Settings</h2>
 <div class="slider-container-inner"> 
     <p style="padding-left: 5px">Make more likely paths bolder?</p>
     <input type="checkbox" id="boldPathsCheckbox" onclick="updateEverything()" checked>
@@ -379,10 +382,13 @@ document.write(`<div id=slider-container-outer>`); // slider
     <p style="padding-left: 5px">Make less likely paths transparent?</p>
     <input type="checkbox" id="transparentPathsCheckbox" onclick="updateEverything()" checked>
 </div>
-<hr>
+<div class="slider-container-inner">
+    <p style="padding-left: 5px">Minimum opacity?</p>
+    <input type="range" id="${idMinOpacitySlider}" min="0" max="100" value="20" oninput="updateEverything()">
+</div>
+<hr><h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
 <button onclick="setSlidersFromString('4i80i1i90i55i10i30i10i97i60i70i3i75i70i50i80i90i25i94i5i90i6')">Author's estimates</button>
-<hr>
 `);
 
 for (let i = 0; i < Q; i++) {
@@ -482,6 +488,7 @@ function updateNodeStyles() {
         nodeBox.style.width = (parseFloat(window.getComputedStyle(nodeText).width) + 16) + 'px';
         nodeBox.style.height =(parseFloat(window.getComputedStyle(nodeText).height) + 16) + 'px';
         nodeBox.style.opacity = toAlpha(nodes[i].p);
+        nodeText.style.opacity = toAlpha(nodes[i].p);
         nodeText.style.fontWeight = toFontWeight(nodes[i].p);
         nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p) + 'px';
         if (i == probabilityRootNodeIndex) {
