@@ -55,6 +55,7 @@ const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
 const CANVAS_WIDTH = 1200;
 const CANVAS_HEIGHT = 1200;
+const CHART_UPDATE_INTERVAL = 3000;
 
 // ================================ UTILS
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
@@ -199,7 +200,11 @@ google.charts.setOnLoadCallback(onChartsLoadCallback);
 const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
 
 function onChartsLoadCallback() {
-    var chart = new google.visualization.ColumnChart(document.getElementById(idTotalPlot));
+    setupTotalPlot();
+    setupDetailPlot();
+}
+function setupTotalPlot() {
+    var chart = new google.visualization.BarChart(document.getElementById(idTotalPlot));
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Outcome');
     data.addColumn('number', 'Probability');
@@ -213,15 +218,11 @@ function onChartsLoadCallback() {
             bold: true,
         },
         width: 600,
-        height: 400,
+        height: 800,
         bar: {groupWidth: "75%"},
         legend: { position: "none" },
         chartArea: { width: '50%' },
-        // hAxis: {
-        //     title: 'Element'
-        // },
-        vAxis: {
-            // title: 'Probability (%)',
+        hAxis: {
             format: 'percent'
         },
         annotations: {
@@ -236,7 +237,7 @@ function onChartsLoadCallback() {
 
     function updateChartData() {
         const newMillis = CHART_CATEGORIES.map(categoy => 
-            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0.0)
+            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0)
         );
         if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
             return; // no changes
@@ -253,7 +254,75 @@ function onChartsLoadCallback() {
     updateChartData(); // draw initially.
 
     // Update plots at a regular interval.
-    setInterval(updateChartData, 3000);
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+}
+
+function sortByKey(array, keyFunction) {
+    return array.sort((a, b) => {
+        var x = keyFunction(a); var y = keyFunction(b);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+function setupDetailPlot() {
+    var chart = new google.visualization.BarChart(document.getElementById(idDetailPlot));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Outcome');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+
+    var options = {
+        title: "Detailed Probabilities",
+        titleTextStyle: {
+            fontSize: 18,
+            bold: true,
+        },
+        width: 800,
+        height: 1200,
+        bar: {groupWidth: "75%"},
+        legend: { position: "none" },
+        chartArea: { width: '50%' },
+        hAxis: {
+            format: 'percent',
+        },
+        annotations: {
+            alwaysOutside: false
+        },
+        animation: {
+            duration: 100,
+            easing: 'out',
+        },
+    };
+
+    let millis = null;
+    function updateChartData() {
+        const newMillis = nodes.map(node => Math.round(node.p*1000));
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type)).map(node => {
+            return {
+                p: node.p,
+                text: node.formatTextForPlots(),
+                typeIndex: CHART_CATEGORIES.indexOf(node.type),
+                color: COLORS[node.type],
+            };
+        });
+        sortByKey(newData, d => -d.p);
+        sortByKey(newData, d => d.typeIndex);
+
+        data.removeRows(0, data.getNumberOfRows());
+        newData.map(d => {
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p) + "%"]);
+        });
+        chart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+
+    // Update plots at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
 }
 
 // ================================ HEADER 

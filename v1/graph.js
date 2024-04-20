@@ -1,11 +1,11 @@
 const NODES_STR = `
 s;sstart;8;4;START|HERE|
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
-a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned.
+a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned
 i;iresearch-continues;8;8;AI research continues
 n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
 a;aai-winter;6;10;Permanent AI winter
-i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential.
+i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
 n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
 i;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
 n;ntry-stop2;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
@@ -14,7 +14,7 @@ n;nenforce-slow;12;14;Can Humanity enforce this slow/careful approach globally?
 g;gagi-utopia;12;16;(Slightly delayed) AGI utopia
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
 n;nagi-transformative;8;14;Is AGI transformative?
-a;anon-transformative-agi;8;12;Powerful, but not transformative AGI.
+a;anon-transformative-agi;8;12;Powerful, but not transformative AGI
 n;nprevent-other-agis;6;12;Will the first AGI prevent other AGIs to appear?
 n;nagis-collaborate;4;12;Will AGIs collaborate with each other?
 i;iconflicting-agis;4;10;Conflicting AGIs
