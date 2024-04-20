@@ -1,5 +1,3 @@
-
-
 const NODES_STR = `
 s;sstart;8;4;START|HERE|
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
@@ -101,46 +99,3 @@ y;nbenefit-suffering;esuffering
 n;nbenefit-suffering;emedium-dystopia
 `.trim();
 
-// Edge types
-const YES = 'y';
-const NO = 'n';
-const E100 = '-';
-
-// Node types
-const NORMAL = 'n';
-const START = 's';
-const GOOD = 'g';
-const AMBIVALENT = 'a';
-const EXISTENTIAL = 'e';
-const INTERMEDIATE = 'i';
-
-// Map from node type to color
-const COLORS = {
-    [NORMAL]: 'rgb(255, 255, 255)',
-    [START]: 'rgb(114, 158, 240)',
-    [GOOD]: 'rgb(97, 247, 115)',
-    [AMBIVALENT]: 'rgb(244, 244, 99)',
-    [EXISTENTIAL]: 'rgb(223, 94, 55)',
-    [INTERMEDIATE]: 'rgb(168, 191, 171)',
-};
-
-// IDs
-const idTableTotalForTypeP = 'idTableTotalForTypeP';
-const idTableNodeCellP = 'idTableNodeCellP';
-const idNodeBoxDiv = 'idNodeBoxDiv';
-const idNodeTextDiv = 'idNodeTextDiv';
-const idSliderInput = 'idSliderInput';
-const idSliderNumberBox = 'idSliderNumberBox';
-const idEdgeLabel = 'idEdgeLabel';
-const idDetailPlot = 'idDetailPlot';
-const idTotalPlot = 'idTotalPlot';
-
-// Other constants
-const XSCALE = 1.0;
-const SLIDER_DEFAULT_VALUE = 50;
-const OUTCOME_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
-const OUTCOME_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome"];
-const CANVAS_PADDINGW = 100;
-const CANVAS_PADDINGH = 50;
-const CANVAS_WIDTH = 1200;
-const CANVAS_HEIGHT = 1200;

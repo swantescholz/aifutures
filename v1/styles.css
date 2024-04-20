@@ -83,8 +83,8 @@ input[type="range"] {
 }
 .slider-container-inner {
     width: 100%;
-    display: flex;         /* Aligns children (slider and textbox) in a row */
-    align-items: center;     /* Centers the children vertically */
+    display: flex;
+    align-items: center;
 }
 .shareButton {
     margin: 10px;
