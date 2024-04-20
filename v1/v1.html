@@ -206,18 +206,13 @@ function onChartsLoadCallback() {
     data.addColumn({type: 'string', role: 'style'});
     data.addColumn({type: 'string', role: 'annotation'});
 
-    // get probabilities for each category for the nodes
-    CHART_CATEGORIES.map(categoy => {
-        nodes.filter(node => {todo
-
-        }
-        .map(eIndex => pEdge(eIndex)).reduce((a, b) => a + b, 0.0);
-        
-    };
-
     var options = {
         title: "Total Probabilities",
-        width: 800,
+        titleTextStyle: {
+            fontSize: 18,
+            bold: true,
+        },
+        width: 600,
         height: 400,
         bar: {groupWidth: "75%"},
         legend: { position: "none" },
@@ -237,17 +232,25 @@ function onChartsLoadCallback() {
             easing: 'out',
         },
     };
+    let millis = null;
 
     function updateChartData() {
+        const newMillis = CHART_CATEGORIES.map(categoy => 
+            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0.0)
+        );
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+
         data.removeRows(0, data.getNumberOfRows());
-        data.addRows([
-            ['Copper\nCu\n29', Math.random(), 'color: #b87333', (Math.random() * 20).toFixed(2) + ' g/cm³'],
-            ['Silver\nAg\n47', Math.random(), 'color: silver', (Math.random() * 20).toFixed(2) + ' g/cm³'],
-            ['Gold\nAu\n79', Math.random(), 'color: gold', (Math.random() * 20).toFixed(2) + ' g/cm³'],
-            ['Platinum\nPt\n78', Math.random(), 'color: #e5e4e2', (Math.random() * 20).toFixed(2) + ' g/cm³']
-        ]);
+        CHART_CATEGORIES.map((categoy, i) => {
+            const p = millis[i]/1000.0;
+            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p) + "%"]);
+        });
         chart.draw(data, options);
     }
+    updateChartData(); // draw initially.
 
     // Update plots at a regular interval.
     setInterval(updateChartData, 3000);
