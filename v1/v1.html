@@ -349,22 +349,9 @@ document.write(`
 </div>
 `);
 // ================================ ROW 1
-
 document.write(`<div id="layoutRow1">`);
-document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
-document.write(`<canvas></canvas>`);
-nodes.map(node => {
-    document.write(`
-    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
-    `);
-});
-edges.map((edge, index) => {
-    document.write(`<div id="${idEdgeLabel+index}" class="edge-label"></div>`);
-});
-document.write(`</div>`); // /canvas-container
+// Settings
 document.write(`<div id=slider-container-outer>`); // slider
-// Settings=================================
 document.write(`
 <h2>Settings</h2>
 <div class="slider-container-inner"> 
@@ -394,6 +381,19 @@ for (let i = 0; i < Q; i++) {
 `);
 }
 document.write('</div>'); // /slider
+// Canvas
+document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
+document.write(`<canvas></canvas>`);
+nodes.map(node => {
+    document.write(`
+    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
+    `);
+});
+edges.map((edge, index) => {
+    document.write(`<div id="${idEdgeLabel+index}" class="edge-label"></div>`);
+});
+document.write(`</div>`); // /canvas-container
 document.write(`</div>`); // /layoutRow1
 // ================================ ROW 2
 document.write(`
