@@ -59,7 +59,7 @@ const CHART_UPDATE_INTERVAL = 3000;
 
 // ================================ UTILS
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
-const toPercentString = p => (p*100).toFixed((p*100 < 10.0) ? 1 : 0);
+const toPercentString = p => (p*100).toFixed((p*100 < 10.0) ? 1 : 0) + '%';
 function toAlpha(p) {
     if (document.getElementById('transparentPathsCheckbox').checked) {
         return interpolateFast(p, 0.2, 1.0);
@@ -199,6 +199,9 @@ google.charts.setOnLoadCallback(onChartsLoadCallback);
 
 const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
 
+function toPlotTooltipString(text, p) {
+    return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
+}
 function onChartsLoadCallback() {
     setupTotalPlot();
     setupDetailPlot();
@@ -210,6 +213,7 @@ function setupTotalPlot() {
     data.addColumn('number', 'Probability');
     data.addColumn({type: 'string', role: 'style'});
     data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
 
     var options = {
         title: "Total Probabilities",
@@ -222,6 +226,7 @@ function setupTotalPlot() {
         bar: {groupWidth: "75%"},
         legend: { position: "none" },
         chartArea: { width: '50%' },
+        tooltip: {isHtml: true},
         hAxis: {
             format: 'percent'
         },
@@ -247,7 +252,7 @@ function setupTotalPlot() {
         data.removeRows(0, data.getNumberOfRows());
         CHART_CATEGORIES.map((categoy, i) => {
             const p = millis[i]/1000.0;
-            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p) + "%"]);
+            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
         });
         chart.draw(data, options);
     }
@@ -271,6 +276,7 @@ function setupDetailPlot() {
     data.addColumn('number', 'Probability');
     data.addColumn({type: 'string', role: 'style'});
     data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
 
     var options = {
         title: "Detailed Probabilities",
@@ -283,6 +289,7 @@ function setupDetailPlot() {
         bar: {groupWidth: "75%"},
         legend: { position: "none" },
         chartArea: { width: '50%' },
+        tooltip: {isHtml: true},
         hAxis: {
             format: 'percent',
         },
@@ -315,7 +322,7 @@ function setupDetailPlot() {
 
         data.removeRows(0, data.getNumberOfRows());
         newData.map(d => {
-            data.addRow([d.text, d.p, d.color, toPercentString(d.p) + "%"]);
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipString(d.text, d.p)]);
         });
         chart.draw(data, options);
     }
