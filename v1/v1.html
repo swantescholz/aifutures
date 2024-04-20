@@ -201,6 +201,28 @@ google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(onChartsLoadCallback);
 
 const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
+const PLOT_PADDING = 50;
+const COMMON_PLOT_OPTIONS = {
+    width: 600,
+    height: 800,
+    titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+    },
+    bar: {groupWidth: "75%"},
+    legend: { position: "none" },
+    tooltip: {isHtml: true},
+    hAxis: {
+        format: 'percent'
+    },
+    annotations: {
+        alwaysOutside: false
+    },
+    animation: {
+        duration: 100,
+        easing: 'out',
+    },
+};
 
 function toPlotTooltipString(text, p) {
     return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
@@ -219,27 +241,12 @@ function setupTotalPlot() {
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
 
     var options = {
+        ...COMMON_PLOT_OPTIONS,
         title: "Total Probabilities",
-        titleTextStyle: {
-            fontSize: 18,
-            bold: true,
-        },
-        width: 600,
-        height: 800,
-        bar: {groupWidth: "75%"},
-        legend: { position: "none" },
-        chartArea: { width: '50%' },
-        tooltip: {isHtml: true},
         hAxis: {
             format: 'percent'
         },
-        annotations: {
-            alwaysOutside: false
-        },
-        animation: {
-            duration: 100,
-            easing: 'out',
-        },
+        chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
     };
     let millis = null;
 
@@ -282,27 +289,12 @@ function setupDetailPlot() {
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
 
     var options = {
+        ...COMMON_PLOT_OPTIONS,
         title: "Detailed Probabilities",
-        titleTextStyle: {
-            fontSize: 18,
-            bold: true,
-        },
-        width: 800,
-        height: 1200,
-        bar: {groupWidth: "75%"},
-        legend: { position: "none" },
-        chartArea: { width: '50%' },
-        tooltip: {isHtml: true},
         hAxis: {
             format: 'percent',
         },
-        annotations: {
-            alwaysOutside: false
-        },
-        animation: {
-            duration: 100,
-            easing: 'out',
-        },
+        chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
     };
 
     let millis = null;
@@ -338,7 +330,7 @@ function setupDetailPlot() {
 // ================================ HEADER 
 document.write(`
 <div id="mainContent">
-    <h1>Map of AI Doom (<a href="http://bit.ly/map-of-ai-doom">bit.ly/map-of-ai-doom</a>)</h1>
+    <h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
     
     TODO:
     <br>Legend/glossary. 

@@ -40,7 +40,6 @@ input[type="range"] {
 #plotSection {
     display: flex;
     align-items: flex-start; 
-    border: 1px solid black;
 }
 #canvas-container {
     position: relative;
