@@ -37,9 +37,10 @@ input[type="range"] {
     display: flex;
     align-items: center; 
 }
-#layoutRow2 {
+#plotSection {
     display: flex;
     align-items: flex-start; 
+    border: 1px solid black;
 }
 #canvas-container {
     position: relative;
@@ -57,6 +58,9 @@ input[type="range"] {
     display: flex;
     align-items: center; 
     margin: 10px;
+}
+.plot {
+    border: 1px solid black;
 }
 .nodeBox {
     position: absolute;
