@@ -35,7 +35,7 @@ input[type="range"] {
 #mainContent {}
 #layoutRow1 {
     display: flex;
-    align-items: center; 
+    align-items: flex-start; 
 }
 #plotSection {
     display: flex;
@@ -52,6 +52,7 @@ input[type="range"] {
     padding: 10px;
     border: 1px solid black;
     flex-shrink: 0;
+    margin: 5px 0;
 }
 #shareRow {
     display: flex;
@@ -63,7 +64,7 @@ input[type="range"] {
     padding: 0px;
 }
 .accordion-header {
-    background-color: #f9f9f9;
+    background-color: #f1f1f1;
     color: #444;
     cursor: pointer;
     padding: 18px;
@@ -87,6 +88,7 @@ input[type="range"] {
     transition: max-height 0.2s ease-out;
     font-family: Arial, sans-serif;
     font-size: medium;
+    border: 2px solid black;
 }
 .plot {
     border: 1px solid black;

@@ -21,13 +21,13 @@ n;nimplement-alignment2;6;16;Will all other AGI labs implement alignment correct
 i;ialigned-agi;4;16;Aligned AGI
 n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
 g;gagi-utopia2;4;20;AGI utopia
-n;ncontrollers-thoughtful;6;18;Are AGI controllers thoughtful regarding unintended consequences?
+n;ncontrollers-thoughtful;6;18;Are AGI controllers wise enough to avoid unintended consequences?
 n;nagi-protects;8;20;Does AGI protect its users?
-e;estupid-xrisk;8;22;Accidental/stupid human extinction
+e;estupid-xrisk;8;22;Accidental human extinction
 n;ncontrollers-good;6;20;Do AGI controllers have good intentions?
 e;eauthoritarian-dystopia;6;22;Authoritarian dystopia
 i;imisaligned-agi;8;16;Misaligned AGI
-n;nfigure-misaligned;8;18;Do we figure out it's misaligned?
+n;nfigure-misaligned;8;18;Do we figure out right away that it's misaligned?
 n;nturn-off;10;18;Can we easily turn it off?
 a;asecond-chance;12;18;We get a second chance at building AGI
 n;nharming-us;10;20;Is it harming us?
@@ -35,7 +35,7 @@ n;ncan-destroy-it;12;20;Can we destroy it?
 n;nbenefit-extinction;12;22;Does it benefit from our extinction?
 e;eagi-kills-us;12;24;AGI-initiated human extinction
 n;nbenefit-suffering;10;24;Does it benefit from our suffering?
-e;emedium-dystopia;10;22;Medium-scale dystopia
+e;emedium-dystopia;10;22;"WALL-E" AI dystopia: humans survive, but AI is in control
 e;esuffering;8;24;Astronomical suffering
 `.trim();
 
