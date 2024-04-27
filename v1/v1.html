@@ -35,7 +35,7 @@ const COLORS = {
     [INTERMEDIATE]: 'rgb(168, 191, 171)',
 };
 const NODE_HIGHLIGHT_COLOR = 'orange';
-const NODE_HOVER_COLOR = 'rgb(173, 216, 230)';
+const NODE_HOVER_COLOR = 'rgb(113, 116, 230)';
 
 // IDs
 const idTableTotalForTypeP = 'idTableTotalForTypeP';
@@ -451,11 +451,12 @@ document.write(`
 
 for (let i = 0; i < Q; i++) {
     document.write(`
+<div id=${idSliderContainer+i} onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
 <p style="padding-left: 5px">${nodes[normalNodesIndices[i]].text.trim()}</p>
-<div class="slider-container-inner" id=${idSliderContainer+i} onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
+<div class="slider-container-inner"> 
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
     <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
-</div>
+</div></div>
 `);
 }
 document.write('</div>'); // /slider
