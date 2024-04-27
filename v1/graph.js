@@ -1,5 +1,5 @@
 const NODES_STR = `
-s;sstart;8;4;START|HERE|
+s;sstart;8;6;START|HERE|
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
 a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned
 i;iresearch-continues;8;8;AI research continues
@@ -7,21 +7,17 @@ n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
 n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
-i;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
+i;ccatastrophy-occurs;11;12;pre-AGI catastrophe does occur!
 n;ntry-stop2;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
 n;nenforce-slow;12;14;Humanity enforces slow/careful AI development globally?
 g;gagi-utopia;12;16;(Slightly delayed) AGI utopia
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
-n;nagi-transformative;8;14;Is AGI transformative?
-a;anon-transformative-agi;8;12;Powerful, but not transformative AGI
-n;nprevent-other-agis;6;12;Will the first AGI prevent other AGIs to appear?
-n;nagis-collaborate;4;12;Will AGIs collaborate with each other?
-i;iconflicting-agis;4;10;Conflicting AGIs
-n;nconflicting-agi-survive;4;6;Will humanity survive among conflicting AGIs?
-e;econflicting-agi-xrisk;4;4;Extinction from conflicting AGIs
-a;aconflicting-agi-survive;6;4;Uncertain future among conflicting AGIs
-n;nalignment-theory;6;14;Do we have a practical solution for AGI alignment?
-n;nimplement-alignment;6;16;Do AI labs implement alignment correctly?
+n;nagi-transformative;8;12;Is AGI transformative?
+a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
+n;nalignment-theory;8;14;Do we have a practical solution for AGI alignment?
+n;nimplement-alignment1;6;14;Will the first AGI lab implement alignment correctly?
+n;nprevent-other-agis;4;14;Will the first AGI prevent other AGIs from appearing?
+n;nimplement-alignment2;6;16;Will all other AGI labs implement alignment correctly?
 i;ialigned-agi;4;16;Aligned AGI
 n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
 g;gagi-utopia2;4;20;AGI utopia
@@ -59,19 +55,16 @@ y;nenforce-slow;gagi-utopia
 n;nenforce-slow;iagi-exists
 n;ncatastrophe;iagi-exists
 -;iagi-exists;nagi-transformative
+y;nagi-transformative;nalignment-theory
 n;nagi-transformative;anon-transformative-agi
-y;nagi-transformative;nprevent-other-agis
-n;nprevent-other-agis;nagis-collaborate
-y;nprevent-other-agis;nalignment-theory
-n;nagis-collaborate;iconflicting-agis
-y;nagis-collaborate;nalignment-theory
--;iconflicting-agis;nconflicting-agi-survive
-n;nconflicting-agi-survive;econflicting-agi-xrisk
-y;nconflicting-agi-survive;aconflicting-agi-survive
-y;nalignment-theory;nimplement-alignment
+y;nalignment-theory;nimplement-alignment1
 n;nalignment-theory;imisaligned-agi
-n;nimplement-alignment;imisaligned-agi
-y;nimplement-alignment;ialigned-agi
+n;nimplement-alignment1;imisaligned-agi
+y;nimplement-alignment1;nprevent-other-agis
+n;nprevent-other-agis;nimplement-alignment2
+y;nprevent-other-agis;ialigned-agi
+n;nimplement-alignment2;imisaligned-agi
+y;nimplement-alignment2;ialigned-agi
 -;ialigned-agi;nwhole-humanity-aligned
 n;nwhole-humanity-aligned;ncontrollers-thoughtful
 y;nwhole-humanity-aligned;gagi-utopia2
