@@ -334,40 +334,61 @@ document.write(`
 <button class="accordion-header">Hide Instructions</button>
 <div class="accordion-content">
 
-# Background
-Many experts and CEOs of the leading AI companies think advanced AI could pose catastrophic, or even existential risks to humaniy.
-I think we should take these concerns extremely seriously, and work hard to ensure that AI is developed in a way that is safe and beneficial for humanity.
-This map is an attempt to visualize some of the key questions and uncertainties that could determine the future of AI, and to explore how different assumptions about these questions could lead to different outcomes.
+<div id="background">
+    <h4>Background</h4>
+    <p>Many experts and CEOs of the leading AI companies think advanced AI could pose catastrophic, or even existential risks to humanity.</p>
+    <p>I think we should take these concerns extremely seriously, and work hard to ensure that AI is developed in a way that is safe and beneficial for humanity.</p>
+    <p>This map is an attempt to visualize some of the key questions and uncertainties that could determine the future of AI, and to explore how different assumptions about these questions could lead to different outcomes.</p>
+</div>
 
-# How to use
-- Adjust the sliders to set the probabilities for each question.
-- The map and charts will update in real-time to show the probabilities for each node and outcome category.
-- Adjust the settings to make more likely paths bolder, or less likely paths transparent. By setting the minimum opacity to zero, impossible branches of the map will become fully transparent.
+<div id="how-to-use">
+    <h4>How to use</h4>
+    <ul>
+        <li>Adjust the sliders to set the probabilities for each question.</li>
+        <li>The map and charts will update in real-time to show the probabilities for each node and outcome category.</li>
+        <li>Adjust the settings to make more likely paths bolder, or less likely paths transparent. By setting the minimum opacity to zero, impossible branches of the map will become fully transparent.</li>
+    </ul>
+</div>
 
-# Caveats
-- The future is notoriously difficult to predict. I'm not an AI expert, and I'm sure this map is flawed in various ways. Any outcome probabilities computed here are highly speculative, and should be taken with a grain of salt.
-- Consider this map as a reflection and conversation tool for exploring your own assumptions, and how they differ from a person with a different intuition about the future of AI.
-- The sliders represent *conditional* probabilities, i.e. the probability for the given question assuming we reached the corresponding node in the graph.
+<div id="caveats">
+    <h4>Caveats</h4>
+    <ul>
+        <li>The future is notoriously difficult to predict. I'm not an AI expert, and I'm sure this map is flawed in various ways. Any outcome probabilities computed here are highly speculative, and should be taken with a grain of salt.</li>
+        <li>Consider this map as a reflection and conversation tool for exploring your own assumptions, and how they differ from a person with a different intuition about the future of AI.</li>
+        <li>The sliders represent <b>conditional</b> probabilities, i.e. the probability for the given question assuming we reached the corresponding node in the graph.</li>
+    </ul>
+</div>
 
-# Glossary
-Here are definitions of some terms as they are being used on this site:
-- **AGI**: Artificial General Intelligence, an advanced AI that can perform any intellectual task that a human can.
-- **Existential Catastrophe**: A catastrophic event that would lead to the destruction of humanity's long-term potential, such as human extinction or the permanent collapse of civilization.
-- **Ambivalent Outcome**: An outcome that could lead to both a good or a bad future for humanity, or to a morally ambiguous situation.
-- **Good Outcome**: An outcome that would lead to a future that is good for humanity by most common moral perspectives.
+<div id="glossary">
+    <h4>Glossary</h4>
+    <ul>
+        <li><strong>AGI</strong>: Artificial General Intelligence, an advanced AI that can perform any intellectual task that a human can.</li>
+        <li><strong>Existential Catastrophe</strong>: A catastrophic event that would lead to the destruction of humanity's long-term potential, such as human extinction or the permanent collapse of civilization.</li>
+        <li><strong>Ambivalent Outcome</strong>: An outcome that could lead to both a good or a bad future for humanity, or to a morally ambiguous situation.</li>
+        <li><strong>Good Outcome</strong>: An outcome that would lead to a future that is good for humanity by most common moral perspectives.</li>
+    </ul>
+</div>
 
-# Further reading
-- [Existential risk from artificial general intelligence (Wikipedia)](https://en.wikipedia.org/wiki/Existential_risk_from_artificial_general_intelligence)
-- [An Overview of Catastrophic AI Risks (Center for AI Safety)](https://arxiv.org/abs/2306.12001)
-- [Statement on AI Risk (Center for AI Safety)](https://www.safe.ai/work/statement-on-ai-risk)
-- [Preventing an AI-related catastrophe (80,000 Hours)](https://80000hours.org/problem-profiles/artificial-intelligence/)
+<div id="further-reading">
+    <h4>Further reading</h4>
+    <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Existential_risk_from_artificial_general_intelligence">Existential risk from artificial general intelligence (Wikipedia)</a></li>
+        <li><a href="https://arxiv.org/abs/2306.12001">An Overview of Catastrophic AI Risks (Center for AI Safety)</a></li>
+        <li><a href="https://www.safe.ai/work/statement-on-ai-risk">Statement on AI Risk (Center for AI Safety)</a></li>
+        <li><a href="https://80000hours.org/problem-profiles/artificial-intelligence/">Preventing an AI-related catastrophe (80,000 Hours)</a></li>
+    </ul>
+</div>
 
-# Feedback
-If you have any feedback about this map (both about the questions/structure or the user interface), please let me know via this [Feedback Form](https://forms.gle/begpVWQZ29qijYUu6).
+<div id="feedback">
+    <h4>Feedback</h4>
+    <p>If you have any feedback about this map (both about the questions/structure or the user interface), please let me know via this <a href="https://forms.gle/begpVWQZ29qijYUu6">Feedback Form</a>.</p>
+</div>
 
-# Authors
-Swante Scholz, 2024. [Code repository (Github)](https://github.com/swantescholz/aidoom/). Feel free to modify and share this code. It is released under the Unlicense.
-All views expressed here are my own.
+<div id="authors">
+    <h4>Authors</h4>
+    <p>Swante Scholz, 2024. <a href="https://github.com/swantescholz/aidoom/">Code repository (Github)</a>. Feel free to modify and share this code. It is released under the Unlicense.</p>
+    <p>All views expressed here are my own.</p>
+</div>
 </div>`);
 var acc = document.getElementsByClassName("accordion-header");
 for (var i = 0; i < acc.length; i++) {
