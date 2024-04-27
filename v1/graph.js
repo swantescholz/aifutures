@@ -9,8 +9,7 @@ i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catas
 n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
 i;ccatastrophy-occurs;11.2;8;pre-AGI catastrophe does occur!
 n;ntry-stop2;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
-n;ntry-slow;12;12;Humanity agrees to advance AI only extremely carefully to avoid risks?
-n;nenforce-slow;12;14;Can Humanity enforce this slow/careful approach globally?
+n;nenforce-slow;12;14;Humanity enforces slow/careful AI development globally?
 g;gagi-utopia;12;16;(Slightly delayed) AGI utopia
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
 n;nagi-transformative;8;14;Is AGI transformative?
@@ -21,7 +20,7 @@ i;iconflicting-agis;4;10;Conflicting AGIs
 n;nconflicting-agi-survive;4;6;Will humanity survive among conflicting AGIs?
 e;econflicting-agi-xrisk;4;4;Extinction from conflicting AGIs
 a;aconflicting-agi-survive;6;4;Uncertain future among conflicting AGIs
-n;nalignment-theory;6;14;Have we solved AGI alignment in theory?
+n;nalignment-theory;6;14;Do we have a practical solution for AGI alignment?
 n;nimplement-alignment;6;16;Do AI labs implement alignment correctly?
 i;ialigned-agi;4;16;Aligned AGI
 n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
@@ -55,9 +54,7 @@ n;ncapabilities-improve;aai-winter
 y;ncatastrophe;ccatastrophy-occurs
 -;ccatastrophy-occurs;ntry-stop2
 y;ntry-stop2;adune
-n;ntry-stop2;ntry-slow
-y;ntry-slow;nenforce-slow
-n;ntry-slow;iagi-exists
+n;ntry-stop2;nenforce-slow
 y;nenforce-slow;gagi-utopia
 n;nenforce-slow;iagi-exists
 n;ncatastrophe;iagi-exists
