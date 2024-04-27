@@ -649,8 +649,10 @@ function updateEdgeLabel(i, x1, y1, x2, y2) {
     dy = dy / norm * offset * (flipSign ? -1 : 1);
     const angle = Math.atan2(y2 - y1, x2 - x1) + (flipSign? Math.PI : 0);
     edgeLabel.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
-    edgeLabel.style.left = dx + (x1 + x2) / 2 + 'px';
-    edgeLabel.style.top = dy + (y1 + y2) / 2 + 'px';
+    const x3 = dx + x1 + (x2 - x1) * 0.4;
+    const y3 = dy + y1 + (y2 - y1) * 0.4;
+    edgeLabel.style.left = x3 + 'px';
+    edgeLabel.style.top = y3 + 'px';
     edgeLabel.style.opacity = toAlpha(edges[i].p);
     edgeLabel.style.fontWeight = toFontWeight(edges[i].p);
     let label = edges[i].yn === E100 ? "" : (edges[i].yn+"=")
