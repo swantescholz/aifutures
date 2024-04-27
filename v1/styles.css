@@ -58,6 +58,32 @@ input[type="range"] {
     align-items: center; 
     margin: 10px;
 }
+.accordion-header {
+    background-color: #f9f9f9;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    max-width: 900px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    transition: 0.4s;
+    border-bottom: 1px solid #ccc;
+}
+.accordion-header:hover {
+    background-color: #ddd;
+}
+.accordion-content {
+    padding: 0 18px;
+    max-width: 880px;
+    background-color: white;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    font-family: Arial, sans-serif;
+    font-size: medium;
+}
 .plot {
     border: 1px solid black;
 }

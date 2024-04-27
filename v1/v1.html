@@ -327,27 +327,45 @@ function setupDetailPlot() {
     setInterval(updateChartData, CHART_UPDATE_INTERVAL);
 }
 
-// ================================ HEADER 
+// ================================ HEADER / INSTRUCTIONS
 document.write(`
 <div id="mainContent">
-    <h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
-    
-    TODO:
+<h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
+<button class="accordion-header">Hide Instructions</button>
+<div class="accordion-content">
+<p>Your detailed instructions go here. This content can be quite extensive, including steps, guidelines, or any relevant information that the user may need to refer to, but might want to hide otherwise to keep the UI clean.</p>
+</div>
+
+    <p>TODO:</p>
     <br>Legend/glossary. 
     <br>Explain sliders use conditional probabilities.
     <br>Define catastrophic risks.
     <br>add authors, and link to source code. mention unlicense, so people know they may modify etc.
 `);
+var acc = document.getElementsByClassName("accordion-header");
+for (var i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "none") {
+        panel.style.display = "block";
+        this.textContent = 'Hide Instructions';
+    } else {
+        panel.style.display = "none";
+        this.textContent = 'Show Instructions';
+    }
+  });
+}
 
 // ================================ SHARING / EXPORT
-document.write(`
-<div id="shareRow">
-<h2>Share this page:</h2>
-    <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
-    <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
-    <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
-</div>
-`);
+// document.write(`
+// <div id="shareRow">
+// <h2>Share this page:</h2>
+//     <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
+//     <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
+//     <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
+// </div>
+// `);
 // ================================ ROW 1
 document.write(`<div id="layoutRow1">`);
 // Settings
