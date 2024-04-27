@@ -58,6 +58,10 @@ input[type="range"] {
     align-items: center; 
     margin: 10px;
 }
+.sliderQuestion {
+    margin: 0px;
+    padding: 0px;
+}
 .accordion-header {
     background-color: #f9f9f9;
     color: #444;
