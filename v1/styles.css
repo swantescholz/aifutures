@@ -76,7 +76,7 @@ input[type="range"] {
     background-color: #ddd;
 }
 .accordion-content {
-    padding: 0 18px;
+    padding: 10px 18px;
     max-width: 880px;
     background-color: white;
     overflow: hidden;
