@@ -34,6 +34,8 @@ const COLORS = {
     [EXISTENTIAL]: 'rgb(223, 94, 55)',
     [INTERMEDIATE]: 'rgb(168, 191, 171)',
 };
+const NODE_HIGHLIGHT_COLOR = 'orange';
+const NODE_HOVER_COLOR = 'rgb(173, 216, 230)';
 
 // IDs
 const idTableTotalForTypeP = 'idTableTotalForTypeP';
@@ -42,6 +44,7 @@ const idNodeBoxDiv = 'idNodeBoxDiv';
 const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
 const idSliderNumberBox = 'idSliderNumberBox';
+const idSliderContainer = 'idSliderContainer';
 const idMinOpacitySlider = 'idMinOpacitySlider';
 const idEdgeLabel = 'idEdgeLabel';
 const idDetailPlot = 'idDetailPlot';
@@ -62,6 +65,12 @@ const CHART_UPDATE_INTERVAL = 1000;
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
 const toPercentString = p => (p*100).toFixed((p*100 < 10.0) ? 1 : 0) + '%';
 const isRealNumber = number => typeof number === 'number' && !isNaN(number);
+function toNodeAlpha(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 1.0;
+    }
+    return toAlpha(p);
+}
 function toAlpha(p) {
     if (document.getElementById('transparentPathsCheckbox').checked) {
         const minAlpha = parseInt(document.getElementById(idMinOpacitySlider).value) / 100.0;
@@ -81,13 +90,19 @@ function toArrowHeadLen(p) {
     }
     return 12;
 }
-function toNodeBorderWidth(p) {
+function toNodeBorderWidth(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 5;
+    }
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 1, 5));
     }
     return 2;
 }
-function toFontWeight(p) {
+function toFontWeight(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 900;
+    }
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 100, 900));
     }
@@ -164,9 +179,9 @@ function initNodes() {
     return nodes;
 }
 const nodes = initNodes();
-let id2index = new Map();
+let nodeId2index = new Map();
 nodes.map((node, index) => {
-    id2index.set(node.id, index);
+    nodeId2index.set(node.id, index);
 });
 const normalNodesIndices = nodes.filter(n => n.type === NORMAL).map(n => n.index);
 
@@ -174,14 +189,15 @@ class Edge {
     constructor(line) {
         const parts = line.trim().split(';');
         this.yn = parts[0];
-        this.source = id2index.get(parts[1]);
-        this.target = id2index.get(parts[2]);
+        this.source = nodeId2index.get(parts[1]);
+        this.target = nodeId2index.get(parts[2]);
         mycheck(this.source, `Unknown node: ${parts[1]}`);
         mycheck(this.target, `Unknown node: ${parts[2]}`);
         this.p = 0.0; // total probability flow going through the edge.
     }
 }
 let probabilityRootNodeIndex = nodes.findIndex(n => n.type === START);
+let hoveredNodeIndex = -1;
 
 let edges = EDGES_STR.split('\n').map(line => new Edge(line));
 const Q = normalNodesIndices.length;
@@ -436,7 +452,7 @@ document.write(`
 for (let i = 0; i < Q; i++) {
     document.write(`
 <p style="padding-left: 5px">${nodes[normalNodesIndices[i]].text.trim()}</p>
-<div class="slider-container-inner"> 
+<div class="slider-container-inner" id=${idSliderContainer+i} onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
     <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
 </div>
@@ -449,7 +465,7 @@ document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
     <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
 edges.map((edge, index) => {
@@ -477,11 +493,22 @@ function handleNodeClick(index) {
     probabilityRootNodeIndex = index;
     updateEverything();
 }
+function handleNodeHover(index) {
+    hoveredNodeIndex = index;
+    updateEverything();
+}
 function updateEverything() {
     updateUrl();
     updateProbabilities();
     updateNodeStyles();
     drawArrows();
+    updateSidebarStyles();
+}
+function updateSidebarStyles() {
+    for (let i = 0; i < Q; i++) {
+        let sliderContainer = document.getElementById(idSliderContainer + i);
+        sliderContainer.style.border = '5px solid ' + getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
+    }
 }
 function updateUrl() {
     let sliderValues = '';
@@ -542,18 +569,23 @@ function updateNodeStyles() {
         let nodeText = document.getElementById(idNodeTextDiv+i);
         nodeBox.style.width = (parseFloat(window.getComputedStyle(nodeText).width) + 16) + 'px';
         nodeBox.style.height =(parseFloat(window.getComputedStyle(nodeText).height) + 16) + 'px';
-        nodeBox.style.opacity = toAlpha(nodes[i].p);
-        nodeText.style.opacity = toAlpha(nodes[i].p);
-        nodeText.style.fontWeight = toFontWeight(nodes[i].p);
-        nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p) + 'px';
-        if (i == probabilityRootNodeIndex) {
-            nodeBox.style.borderColor = 'orange';
-        } else {
-            nodeBox.style.borderColor = 'black';
-        }
+        nodeBox.style.opacity = toNodeAlpha(nodes[i].p, i);
+        nodeText.style.opacity = toNodeAlpha(nodes[i].p, i);
+        nodeText.style.fontWeight = toFontWeight(nodes[i].p, i);
+        nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p, i) + 'px';
+        nodeBox.style.borderColor = getNodeHighlightColorOrDefault(i, 'black');
         const probString = Math.round(nodes[i].p*100).toString()
         const paddedPropString = "&nbsp;".repeat(3-probString.length) + probString;
         nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPropString}]`);
+    }
+}
+function getNodeHighlightColorOrDefault(i, defaultValue) {
+    if (i == probabilityRootNodeIndex) {
+        return NODE_HIGHLIGHT_COLOR;
+    } else if (i == hoveredNodeIndex) {
+        return NODE_HOVER_COLOR;
+    } else {
+        return defaultValue;
     }
 }
 function drawArrows() {
