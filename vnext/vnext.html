@@ -344,6 +344,7 @@ function setupDetailPlot() {
 }
 
 // ================================ HEADER / INSTRUCTIONS
+if (true) {
 document.write(`
 <div id="mainContent">
 <h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
@@ -379,6 +380,7 @@ document.write(`
     <h4>Glossary</h4>
     <ul>
         <li><strong>AGI</strong>: Artificial General Intelligence, an advanced AI that can perform any intellectual task that a human can.</li>
+        <li><strong>Transformative AI</strong>: An AI that would lead to a future that is radically different from the present, for better or worse. A societal change at least as big as the Industrial Revolution.</li>
         <li><strong>Existential Catastrophe</strong>: A catastrophic event that would lead to the destruction of humanity's long-term potential, such as human extinction or the permanent collapse of civilization.</li>
         <li><strong>Ambivalent Outcome</strong>: An outcome that could lead to both a good or a bad future for humanity, or to a morally ambiguous situation.</li>
         <li><strong>Good Outcome</strong>: An outcome that would lead to a future that is good for humanity by most common moral perspectives.</li>
@@ -416,17 +418,18 @@ for (var i = 0; i < acc.length; i++) {
         this.textContent = 'Show Instructions';
     }
   });
-}
+}}
 
 // ================================ SHARING / EXPORT
-// document.write(`
-// <div id="shareRow">
-// <h2>Share this page:</h2>
-//     <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
-//     <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
-//     <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
-// </div>
-// `);
+if (false) {
+document.write(`
+<div id="shareRow">
+<h2>Share this page:</h2>
+    <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
+    <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
+    <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
+</div>
+`);}
 // ================================ ROW 1
 document.write(`<div id="layoutRow1">`);
 // Settings

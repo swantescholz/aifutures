@@ -3,7 +3,7 @@ s;sstart;8;6;START|HERE|
 n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
 a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned
 i;iresearch-continues;8;8;AI research continues
-n;ncapabilities-improve;8;10;Will frontier AI capabilities continue to improve?
+n;ncapabilities-plateau;8;10;Will frontier AI capabilities plateau before AGI?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
 n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
@@ -43,9 +43,9 @@ const EDGES_STR = `
 -;sstart;ntry-stop1
 y;ntry-stop1;adune
 n;ntry-stop1;iresearch-continues
--;iresearch-continues;ncapabilities-improve
-y;ncapabilities-improve;ireach-catastrophic-potential
-n;ncapabilities-improve;aai-winter
+-;iresearch-continues;ncapabilities-plateau
+n;ncapabilities-plateau;ireach-catastrophic-potential
+y;ncapabilities-plateau;aai-winter
 -;ireach-catastrophic-potential;ncatastrophe
 y;ncatastrophe;ccatastrophy-occurs
 -;ccatastrophy-occurs;ntry-stop2

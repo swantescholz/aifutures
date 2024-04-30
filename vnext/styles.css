@@ -60,7 +60,7 @@ input[type="range"] {
     margin: 10px;
 }
 .sliderQuestion {
-    margin: 0px;
+    margin: 0px 0px 3px 0px;
     padding: 0px;
 }
 .accordion-header {
