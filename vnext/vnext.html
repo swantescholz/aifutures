@@ -198,6 +198,7 @@ class Edge {
 }
 let probabilityRootNodeIndex = nodes.findIndex(n => n.type === START);
 let hoveredNodeIndex = -1;
+let undoStack = [];
 
 let edges = EDGES_STR.split('\n').map(line => new Edge(line));
 const Q = normalNodesIndices.length;
@@ -344,7 +345,7 @@ function setupDetailPlot() {
 }
 
 // ================================ HEADER / INSTRUCTIONS
-if (true) {
+if (false) {
 document.write(`
 <div id="mainContent">
 <h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
@@ -451,6 +452,7 @@ document.write(`
 <hr><h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
 <button onclick="setSlidersFromString('1i85i55i2i3i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
+<button onclick="performUndo()">Undo</button>
 <hr>`);// mytodo update my probabilities.
 
 for (let i = 0; i < Q; i++) {
@@ -665,6 +667,9 @@ function drawArrows() {
     }
 }
 function setSlidersFromString(s) {
+    if (undoStack.length == 0 || undoStack[undoStack.length-1] !== s) {
+        undoStack.push(s); // Add initial state, or if the state is different from the current state.
+    }
     let parts = s.split('i');
     for (let i = 0; i < Q; i++) {
         let slider = document.getElementById(idSliderInput + i);
@@ -699,6 +704,22 @@ function updateEdgeLabel(i, x1, y1, x2, y2) {
     }
     edgeLabel.textContent = label;
 }
+function addCurrentValuesToUndoStack() {
+    let sliderValues = '';
+    for (let i = 0; i < Q; i++) {
+        sliderValues += document.getElementById(idSliderInput + i).value;
+        if (i + 1 < Q) {
+            sliderValues += 'i';
+        }
+    }
+    undoStack.push(sliderValues);
+}
+function performUndo() {
+    if (undoStack.length > 1) {
+        undoStack.pop();
+        setSlidersFromString(undoStack[undoStack.length-1]);
+    }
+}
 
 let urlParam = new URLSearchParams(window.location.search).get('p') || '';
 setSlidersFromString(urlParam);
@@ -708,6 +729,13 @@ window.onload = function () {
     for (let i = 0; i < Q; i++) {
         let slider = document.getElementById(idSliderInput + i);
         let textbox = document.getElementById(idSliderNumberBox + i);
+        // add slider callback for releasing the mouse button
+        slider.addEventListener('change', function () {
+            addCurrentValuesToUndoStack();
+        });
+        textbox.addEventListener('change', function () {
+            addCurrentValuesToUndoStack();
+        });
         slider.addEventListener('input', function () {
             textbox.value = slider.value;
             updateEverything();
