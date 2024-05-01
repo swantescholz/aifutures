@@ -130,6 +130,17 @@ function shareOnTwitter() {
     const twUrl = `https://twitter.com/intent/tweet?&url=${getUrl()}`;
     window.open(twUrl, '_blank');
 }
+function downloadCharts() {
+    var downloadLink = document.createElement('a');
+    downloadLink.href = totalChart.getImageURI();
+    downloadLink.download = 'total_probabilities.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.href = detailChart.getImageURI();
+    downloadLink.download = 'detailed_probabilities.png';
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
 function getUrl() {
     return encodeURIComponent(window.location.href);
     // return encodeURIComponent('https://swantescholz.github.io/aidoom');
@@ -213,137 +224,6 @@ edges.map((edge, eIndex) => {
     adj.get(edge.target).push(eIndex);
 });
 
-// ================================ PLOTS
-google.charts.load('current', {packages: ['corechart', 'bar']});
-google.charts.setOnLoadCallback(onChartsLoadCallback);
-
-const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
-const PLOT_PADDING = 50;
-const COMMON_PLOT_OPTIONS = {
-    width: 600,
-    height: 800,
-    titleTextStyle: {
-        fontSize: 18,
-        bold: true,
-    },
-    bar: {groupWidth: "75%"},
-    legend: { position: "none" },
-    tooltip: {isHtml: true},
-    hAxis: {
-        format: 'percent'
-    },
-    annotations: {
-        alwaysOutside: false
-    },
-    animation: {
-        duration: 100,
-        easing: 'out',
-    },
-};
-
-function toPlotTooltipString(text, p) {
-    return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
-}
-function onChartsLoadCallback() {
-    setupTotalPlot();
-    setupDetailPlot();
-}
-function setupTotalPlot() {
-    var chart = new google.visualization.BarChart(document.getElementById(idTotalPlot));
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Outcome');
-    data.addColumn('number', 'Probability');
-    data.addColumn({type: 'string', role: 'style'});
-    data.addColumn({type: 'string', role: 'annotation'});
-    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
-
-    var options = {
-        ...COMMON_PLOT_OPTIONS,
-        title: "Total Probabilities",
-        hAxis: {
-            format: 'percent'
-        },
-        chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
-    };
-    let millis = null;
-
-    function updateChartData() {
-        const newMillis = CHART_CATEGORIES.map(categoy => 
-            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0)
-        );
-        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
-            return; // no changes
-        }
-        millis = newMillis;
-
-        data.removeRows(0, data.getNumberOfRows());
-        CHART_CATEGORIES.map((categoy, i) => {
-            const p = millis[i]/1000.0;
-            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
-        });
-        chart.draw(data, options);
-    }
-    updateChartData(); // draw initially.
-
-    // Update plots at a regular interval.
-    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
-}
-
-function sortByKey(array, keyFunction) {
-    return array.sort((a, b) => {
-        var x = keyFunction(a); var y = keyFunction(b);
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
-}
-
-function setupDetailPlot() {
-    var chart = new google.visualization.BarChart(document.getElementById(idDetailPlot));
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Outcome');
-    data.addColumn('number', 'Probability');
-    data.addColumn({type: 'string', role: 'style'});
-    data.addColumn({type: 'string', role: 'annotation'});
-    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
-
-    var options = {
-        ...COMMON_PLOT_OPTIONS,
-        title: "Detailed Probabilities",
-        hAxis: {
-            format: 'percent',
-        },
-        chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
-    };
-
-    let millis = null;
-    function updateChartData() {
-        const newMillis = nodes.map(node => Math.round(node.p*1000));
-        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
-            return; // no changes
-        }
-        millis = newMillis;
-        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type) && node.p > 0).map(node => {
-            return {
-                p: node.p,
-                text: node.formatTextForPlots(),
-                typeIndex: CHART_CATEGORIES.indexOf(node.type),
-                color: COLORS[node.type],
-            };
-        });
-        sortByKey(newData, d => -d.p);
-        sortByKey(newData, d => d.typeIndex);
-
-        data.removeRows(0, data.getNumberOfRows());
-        newData.map(d => {
-            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipString(d.text, d.p)]);
-        });
-        chart.draw(data, options);
-    }
-    updateChartData(); // draw initially.
-
-    // Update plots at a regular interval.
-    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
-}
-
 // ================================ HEADER / INSTRUCTIONS
 if (false) {
 document.write(`
@@ -420,17 +300,6 @@ for (var i = 0; i < acc.length; i++) {
     }
   });
 }}
-
-// ================================ SHARING / EXPORT
-if (true) {
-document.write(`
-<div id="shareRow">
-<h2>Share this page:</h2>
-    <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
-    <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
-    <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
-</div>
-`);}
 // ================================ ROW 1
 document.write(`<div id="layoutRow1">`);
 // Settings
@@ -486,9 +355,151 @@ document.write(`
 <div id="${idDetailPlot}" class="plot"></div>
 </div>
 `);
-
 document.write(`</div>`); // /layoutRow2
+// ================================ SHARING / EXPORT
+if (true) {
+document.write(`
+<div id="shareRow">
+<h2>Share this page:</h2>
+    <button onclick="copyUrlToClipboard()" class="shareButton">Copy URL to Clipboard</button>
+    <button onclick="shareOnFacebook()" class="shareButton">Share on Facebook</button>
+    <button onclick="shareOnTwitter()" class="shareButton">Share on X (Twitter)</button>
+    <button onclick="downloadCharts()" class="shareButton">Download charts as PNGs</button>
+</div>
+`);}
 document.write(`</div>`); // /mainContent
+// ================================ PLOTS
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(onChartsLoadCallback);
+
+const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
+const PLOT_PADDING = 50;
+const COMMON_PLOT_OPTIONS = {
+    width: 600,
+    height: 800,
+    titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+    },
+    bar: {groupWidth: "75%"},
+    legend: { position: "none" },
+    tooltip: {isHtml: true},
+    hAxis: {
+        format: 'percent'
+    },
+    annotations: {
+        alwaysOutside: false
+    },
+    animation: {
+        duration: 100,
+        easing: 'out',
+    },
+};
+
+function toPlotTooltipString(text, p) {
+    return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
+}
+function onChartsLoadCallback() {
+    setupTotalPlot();
+    setupDetailPlot();
+}
+var totalChart = null;
+function setupTotalPlot() {
+    totalChart = new google.visualization.BarChart(document.getElementById(idTotalPlot));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Outcome');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
+
+    var options = {
+        ...COMMON_PLOT_OPTIONS,
+        title: "Total Probabilities",
+        hAxis: {
+            format: 'percent'
+        },
+        chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+    };
+    let millis = null;
+
+    function updateChartData() {
+        const newMillis = CHART_CATEGORIES.map(categoy => 
+            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0)
+        );
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+
+        data.removeRows(0, data.getNumberOfRows());
+        CHART_CATEGORIES.map((categoy, i) => {
+            const p = millis[i]/1000.0;
+            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
+        });
+        totalChart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+
+    // Update plots at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+}
+
+function sortByKey(array, keyFunction) {
+    return array.sort((a, b) => {
+        var x = keyFunction(a); var y = keyFunction(b);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+var detailChart = null;
+function setupDetailPlot() {
+    detailChart = new google.visualization.BarChart(document.getElementById(idDetailPlot));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Outcome');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
+
+    var options = {
+        ...COMMON_PLOT_OPTIONS,
+        title: "Detailed Probabilities",
+        hAxis: {
+            format: 'percent',
+        },
+        chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+    };
+
+    let millis = null;
+    function updateChartData() {
+        const newMillis = nodes.map(node => Math.round(node.p*1000));
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type) && node.p > 0).map(node => {
+            return {
+                p: node.p,
+                text: node.formatTextForPlots(),
+                typeIndex: CHART_CATEGORIES.indexOf(node.type),
+                color: COLORS[node.type],
+            };
+        });
+        sortByKey(newData, d => -d.p);
+        sortByKey(newData, d => d.typeIndex);
+
+        data.removeRows(0, data.getNumberOfRows());
+        newData.map(d => {
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipString(d.text, d.p)]);
+        });
+        detailChart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+
+    // Update plots at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+}
 // ================================ FUNCTIONS / LOGIC
 const canvas = document.querySelector('canvas');
 canvas.width = CANVAS_WIDTH;
