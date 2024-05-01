@@ -59,6 +59,37 @@ input[type="range"] {
     align-items: center; 
     margin: 10px;
 }
+.shareButton {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+.plain-share-btn {
+    background-color: #d3d2d2;
+    color: rgb(0, 0, 0);
+}
+.plain-share-btn:hover {
+    background-color: #dedfe0;
+}
+.twitter-btn {
+    background-color: #1DA1F2; /* Twitter Blue */
+    color: white;
+}
+.twitter-btn:hover {
+    background-color: #1991DA; /* Darker blue on hover */
+}
+.facebook-btn {
+    background-color: #4267B2; /* Facebook Blue */
+    color: white;
+}
+.facebook-btn:hover {
+    background-color: #365899; /* Darker blue on hover */
+}
 .sliderQuestion {
     margin: 0px 0px 3px 0px;
     padding: 0px;
@@ -120,7 +151,4 @@ input[type="range"] {
     width: 100%;
     display: flex;
     align-items: center;
-}
-.shareButton {
-    margin: 10px;
 }
