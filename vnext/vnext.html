@@ -451,7 +451,7 @@ document.write(`
 </div>
 <hr><h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('1i85i55i2i3i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
+<button onclick="setSlidersFromString('1i15i55i2i3i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
 <button onclick="performUndo()">Undo</button>
 <hr>`);// mytodo update my probabilities.
 
@@ -466,7 +466,6 @@ for (let i = 0; i < Q; i++) {
 `);
 }
 document.write('</div>'); // /slider
-// Canvas
 document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
 document.write(`<canvas></canvas>`);
 nodes.map(node => {
