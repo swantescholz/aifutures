@@ -82,13 +82,13 @@ function toArrowWidth(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 1, 5));
     }
-    return 2;
+    return 3;
 }
 function toArrowHeadLen(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 8, 25));
     }
-    return 12;
+    return 16;
 }
 function toNodeBorderWidth(p, i) {
     if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
@@ -97,7 +97,7 @@ function toNodeBorderWidth(p, i) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 1, 5));
     }
-    return 2;
+    return 3;
 }
 function toFontWeight(p, i) {
     if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
@@ -106,7 +106,7 @@ function toFontWeight(p, i) {
     if (document.getElementById('boldPathsCheckbox').checked) {
         return Math.round(interpolateFast(p, 100, 900));
     }
-    return 400;
+    return 600;
 }
 function interpolateFast(p, min, max) {
     p = clamp01(p);
@@ -132,7 +132,7 @@ function shareOnTwitter() {
 }
 function getUrl() {
     return encodeURIComponent(window.location.href);
-    // return encodeURIComponent('https://swantescholz.github.io/aidoom/v1.html');
+    // return encodeURIComponent('https://swantescholz.github.io/aidoom');
 }
 function mycheck(value, message) {
     if (value === null || value === undefined) {
@@ -422,7 +422,7 @@ for (var i = 0; i < acc.length; i++) {
 }}
 
 // ================================ SHARING / EXPORT
-if (false) {
+if (true) {
 document.write(`
 <div id="shareRow">
 <h2>Share this page:</h2>
