@@ -240,6 +240,7 @@ document.write(`
 <div id="how-to-use">
     <h4>How to use</h4>
     <ul>
+        <li>White nodes are questions; grey nodes are intermediate states; red/yellow/green nodes are bad/ambiguous/good outcomes.</li>
         <li>Adjust the sliders to set the conditional probabilities for each question.</li>
         <li>The map and charts will update in real-time to show the probabilities for each node and outcome category.</li>
         <li>Adjust the settings to make more likely paths bolder, or less likely paths transparent. By setting the minimum opacity to zero, impossible branches of the map will become fully transparent.</li>
@@ -320,7 +321,7 @@ document.write(`
 </div>
 <hr><h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('1i15i55i2i3i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
+<button onclick="setSlidersFromString('1i15i55i2i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
 <button onclick="performUndo()">Undo</button>
 <hr>`);// mytodo update my probabilities.
 
