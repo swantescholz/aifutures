@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map of AI Doom</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="graph.js"></script>
+</head>
+
+<body>
+<script type="text/javascript">
+// ================================ CONSTANTS
+// Edge types
+const YES = 'y';
+const NO = 'n';
+const E100 = '-';
+
+// Node types
+const NORMAL = 'n';
+const START = 's';
+const GOOD = 'g';
+const AMBIVALENT = 'a';
+const EXISTENTIAL = 'e';
+const INTERMEDIATE = 'i';
+
+// Map from node type to color
+const COLORS = {
+    [NORMAL]: 'rgb(255, 255, 255)',
+    [START]: 'rgb(114, 158, 240)',
+    [GOOD]: 'rgb(97, 247, 115)',
+    [AMBIVALENT]: 'rgb(244, 244, 99)',
+    [EXISTENTIAL]: 'rgb(223, 94, 55)',
+    [INTERMEDIATE]: 'rgb(168, 191, 171)',
+};
+const NODE_HIGHLIGHT_COLOR = 'orange';
+const NODE_HOVER_COLOR = 'rgb(113, 116, 230)';
+
+// IDs
+const idTableTotalForTypeP = 'idTableTotalForTypeP';
+const idTableNodeCellP = 'idTableNodeCellP';
+const idNodeBoxDiv = 'idNodeBoxDiv';
+const idNodeTextDiv = 'idNodeTextDiv';
+const idSliderInput = 'idSliderInput';
+const idSliderNumberBox = 'idSliderNumberBox';
+const idSliderContainer = 'idSliderContainer';
+const idMinOpacitySlider = 'idMinOpacitySlider';
+const idEdgeLabel = 'idEdgeLabel';
+const idDetailPlot = 'idDetailPlot';
+const idTotalPlot = 'idTotalPlot';
+
+// Other constants
+const XSCALE = 1.0;
+const SLIDER_DEFAULT_VALUE = 50;
+const OUTCOME_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
+const OUTCOME_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome"];
+const CANVAS_PADDINGW = 100;
+const CANVAS_PADDINGH = 50;
+const CANVAS_WIDTH = 1200;
+const CANVAS_HEIGHT = 1200;
+const CHART_UPDATE_INTERVAL = 1000;
+
+// ================================ UTILS
+const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
+const toPercentString = p => (p*100).toFixed((p*100 < 10.0) ? 1 : 0) + '%';
+const isRealNumber = number => typeof number === 'number' && !isNaN(number);
+function toNodeAlpha(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 1.0;
+    }
+    return toAlpha(p);
+}
+function toAlpha(p) {
+    if (document.getElementById('transparentPathsCheckbox').checked) {
+        const minAlpha = parseInt(document.getElementById(idMinOpacitySlider).value) / 100.0;
+        return interpolateFast(p, minAlpha, 1.0);
+    }
+    return 1.0;
+}
+function toArrowWidth(p) {
+    if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 1, 5));
+    }
+    return 3;
+}
+function toArrowHeadLen(p) {
+    if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 8, 25));
+    }
+    return 16;
+}
+function toNodeBorderWidth(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 5;
+    }
+    if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 1, 5));
+    }
+    return 3;
+}
+function toFontWeight(p, i) {
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 900;
+    }
+    if (document.getElementById('boldPathsCheckbox').checked) {
+        return Math.round(interpolateFast(p, 100, 900));
+    }
+    return 600;
+}
+function interpolateFast(p, min, max) {
+    p = clamp01(p);
+    p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
+    return min + (max - min) * p; // linear interpolation between min and max
+}
+
+function copyUrlToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(function() {
+        alert('URL copied to clipboard');
+    }, function(err) {
+        alert('Failed to copy URL to clipboard');
+    });
+}
+function shareOnFacebook() {
+    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${getUrl()}`;
+    window.open(fbUrl, '_blank');
+}
+function shareOnTwitter() {
+    const twUrl = `https://twitter.com/intent/tweet?&url=${getUrl()}`;
+    window.open(twUrl, '_blank');
+}
+function downloadCharts() {
+    var downloadLink = document.createElement('a');
+    downloadLink.href = totalChart.getImageURI();
+    downloadLink.download = 'total_probabilities.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.href = detailChart.getImageURI();
+    downloadLink.download = 'detailed_probabilities.png';
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+function getUrl() {
+    return encodeURIComponent(window.location.href);
+    // return encodeURIComponent('https://swantescholz.github.io/aidoom');
+}
+function mycheck(value, message) {
+    if (value === null || value === undefined) {
+        throw new Error('Value is null or undefined. Error message: ' + message);
+    }
+}
+
+// ================================ SETUP
+
+let gNodeIndex = 0;
+class Node {
+    constructor(line) {
+        const parts = line.trim().split(';');
+        this.index = gNodeIndex++;
+        this.id = parts[1];
+        this.type = parts[0];
+        this.x = parseFloat(parts[2]) * XSCALE;
+        this.y = parseFloat(parts[3]);
+        this.text = parts[4];
+        this.p = 1.0; // total probability flow going into this node.
+    }
+    formatTextForPlots() {
+        return this.text.replace(/\|/g, ' ');
+    }
+    formatTextForNode() {
+        return this.text.replace(/\|/g, '<br>');
+    }
+}
+
+function initNodes() {
+    let nodes = NODES_STR.split('\n').map(line => new Node(line));
+    let minX = Number.POSITIVE_INFINITY, minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY, maxY = Number.NEGATIVE_INFINITY;
+    nodes.map(node => {
+        minX = Math.min(minX, node.x);
+        minY = Math.min(minY, node.y);
+        maxX = Math.max(maxX, node.x);
+        maxY = Math.max(maxY, node.y);
+    });
+    nodes.map(node => {
+        node.x = (node.x - minX) / (maxX-minX) * (CANVAS_WIDTH - 2*CANVAS_PADDINGW) + CANVAS_PADDINGW;
+        node.y = (node.y - minY) / (maxY-minY) * (CANVAS_HEIGHT - 2*CANVAS_PADDINGH) + CANVAS_PADDINGH;
+    })
+    return nodes;
+}
+const nodes = initNodes();
+let nodeId2index = new Map();
+nodes.map((node, index) => {
+    nodeId2index.set(node.id, index);
+});
+const normalNodesIndices = nodes.filter(n => n.type === NORMAL).map(n => n.index);
+
+class Edge {
+    constructor(line) {
+        const parts = line.trim().split(';');
+        this.yn = parts[0];
+        this.source = nodeId2index.get(parts[1]);
+        this.target = nodeId2index.get(parts[2]);
+        mycheck(this.source, `Unknown node: ${parts[1]}`);
+        mycheck(this.target, `Unknown node: ${parts[2]}`);
+        this.p = 0.0; // total probability flow going through the edge.
+    }
+}
+let probabilityRootNodeIndex = nodes.findIndex(n => n.type === START);
+let hoveredNodeIndex = -1;
+let undoStack = [];
+
+let edges = EDGES_STR.split('\n').map(line => new Edge(line));
+const Q = normalNodesIndices.length;
+const N = nodes.length;
+const E = edges.length;
+
+let adj = new Map();
+edges.map((edge, eIndex) => {
+    if (!adj.has(edge.target)) {
+        adj.set(edge.target, []);
+    }
+    adj.get(edge.target).push(eIndex);
+});
+
+// ================================ HEADER / INSTRUCTIONS
+if (true) { // mytodo
+document.write(`
+<div id="mainContent">
+<h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom">swantescholz.github.io/aidoom</a>)</h1>
+<button class="accordion-header">Hide Instructions</button>
+<div class="accordion-content">
+<div id="background">
+    <h4>Background</h4>
+    <p>Many experts and CEOs of the leading AI companies think advanced AI could pose catastrophic, or even existential risks to humanity.</p>
+    <p>I think we should take these concerns extremely seriously, and work hard to ensure that AI is developed in a way that is safe and beneficial for humanity.</p>
+    <p>This map is an attempt to visualize some of the key questions and uncertainties that could determine the future of AI, and to explore how different assumptions about these questions could lead to different outcomes.</p>
+</div>
+<div id="how-to-use">
+    <h4>How to use</h4>
+    <ul>
+        <li>White nodes are questions; grey nodes are intermediate states; red/yellow/green nodes are bad/ambiguous/good outcomes.</li>
+        <li>Adjust the sliders to set the conditional probabilities for each question.</li>
+        <li>The map and charts will update in real-time to show the probabilities for each node and outcome category.</li>
+        <li>Adjust the settings to make more likely paths bolder, or less likely paths transparent. By setting the minimum opacity to zero, impossible branches of the map will become fully transparent.</li>
+        <li>Click on a node to set it as the root node for the probability calculations, i.e. "what happens if we assume we have reached this state?". Click the "START HERE" node to reset the probability mass to the start.</li>
+        <li>For clicked and hovered-over nodes in the map, the corresponding sliders in the sidebar are highlighted in the same color, and vice-versa.</li>
+        <li>The number in each node represents the total probability (in %) to reach this node.</li>
+        <li>The numbers on edges represents the the chosen conditional probabilities for each question.</li>
+    </ul>
+</div>
+<div id="caveats">
+    <h4>Caveats</h4>
+    <ul>
+        <li>The future is notoriously difficult to predict. I'm not an AI expert, and I'm sure this map is flawed in various ways. Any outcome probabilities computed here are highly speculative, and should be taken with a grain of salt.</li>
+        <li>Consider this map as a reflection and conversation tool for exploring your own assumptions, and comparing them with those from a person with a different intuition about the future of AI.</li>
+        <li>The sliders represent <b>conditional</b> probabilities, i.e. the probability for the given question assuming we reached the corresponding node in the graph.</li>
+    </ul>
+</div>
+<div id="glossary">
+    <h4>Glossary</h4>
+    <ul>
+        <li><strong>AGI</strong>: Artificial General Intelligence, an advanced AI that can perform any intellectual task that a human can.</li>
+        <li><strong>Transformative AI</strong>: An AI that would lead to a future that is radically different from the present, for better or worse. A societal change at least as big as the Industrial Revolution.</li>
+        <li><strong>Existential Catastrophe</strong>: A catastrophic event that would lead to the destruction of humanity's long-term potential, such as human extinction or the permanent collapse of civilization.</li>
+        <li><strong>Ambivalent Outcome</strong>: An outcome that could lead to both a good or a bad future for humanity, or to a morally ambiguous situation.</li>
+        <li><strong>Good Outcome</strong>: An outcome that would lead to a future that is good for humanity by most common moral perspectives.</li>
+    </ul>
+</div>
+<div id="further-reading">
+    <h4>Further reading</h4>
+    <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Existential_risk_from_artificial_general_intelligence" target="_blank">Existential risk from artificial general intelligence (Wikipedia)</a></li>
+        <li><a href="https://arxiv.org/abs/2306.12001" target="_blank">An Overview of Catastrophic AI Risks (Center for AI Safety)</a></li>
+        <li><a href="https://www.safe.ai/work/statement-on-ai-risk" target="_blank">Statement on AI Risk (Center for AI Safety)</a></li>
+        <li><a href="https://80000hours.org/problem-profiles/artificial-intelligence/" target="_blank">Preventing an AI-related catastrophe (80,000 Hours)</a></li>
+    </ul>
+</div>
+<div id="feedback">
+    <h4>Feedback</h4>
+    <p>If you have any feedback about this map (both about the questions/structure or the user interface), please let me know via this <a href="https://forms.gle/begpVWQZ29qijYUu6" target="_blank">Feedback Form</a>.</p>
+</div>
+<div id="authors">
+    <h4>Authors</h4>
+    <p>Swante Scholz, 2024. <a href="https://github.com/swantescholz/aidoom/" target="_blank">Code repository (Github)</a>. Feel free to modify and share this code. It is released under the Unlicense.</p>
+    <p>All views expressed here are my own.</p>
+</div>
+</div>`);
+var acc = document.getElementsByClassName("accordion-header");
+for (var i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "none") {
+        panel.style.display = "block";
+        this.textContent = 'Hide Instructions';
+    } else {
+        panel.style.display = "none";
+        this.textContent = 'Show Instructions';
+    }
+  });
+}}
+// ================================ ROW 1
+document.write(`<div id="layoutRow1">`);
+// Settings
+document.write(`<div id=slider-container-outer>`); // slider
+document.write(`
+<h2>Settings</h2>
+<div class="slider-container-inner"> 
+    <p style="padding-left: 5px">Make more likely paths bolder?</p>
+    <input type="checkbox" id="boldPathsCheckbox" onclick="updateEverything()" checked>
+</div>
+<div class="slider-container-inner"> 
+    <p style="padding-left: 5px">Make less likely paths transparent?</p>
+    <input type="checkbox" id="transparentPathsCheckbox" onclick="updateEverything()" checked>
+</div>
+<div class="slider-container-inner">
+    <p style="padding-left: 5px">Minimum opacity?</p>
+    <input type="range" id="${idMinOpacitySlider}" min="0" max="100" value="20" oninput="updateEverything()">
+</div>
+<hr><h2>Conditional Probabilities</h2>
+<button onclick="setSlidersFromString('')">Reset all to 50%</button>
+<button onclick="setSlidersFromString('1i15i55i2i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
+<button onclick="performUndo()">Undo</button>
+<hr>`);// mytodo update my probabilities.
+
+for (let i = 0; i < Q; i++) {
+    document.write(`
+<div id=${idSliderContainer+i} onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
+<p style="padding-left: 5px" class="sliderQuestion">${nodes[normalNodesIndices[i]].text.trim()}</p>
+<div class="slider-container-inner"> 
+    <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
+    <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
+</div></div>
+`);
+}
+document.write('</div>'); // /slider
+document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
+document.write(`<canvas></canvas>`);
+nodes.map(node => {
+    document.write(`
+    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
+    `);
+});
+edges.map((edge, index) => {
+    document.write(`<div id="${idEdgeLabel+index}" class="edge-label"></div>`);
+});
+document.write(`</div>`); // /canvas-container
+document.write(`</div>`); // /layoutRow1
+// ================================ ROW 2
+document.write(`
+<div id="plotSection">
+<div id="${idTotalPlot}" class="plot"></div>
+<div id="${idDetailPlot}" class="plot"></div>
+</div>
+`);
+document.write(`</div>`); // /layoutRow2
+// ================================ SHARING / EXPORT
+if (true) { // mytodo
+document.write(`
+<div id="shareRow">
+<h1>Share this page:</h1>
+    <button onclick="shareOnFacebook()" class="shareButton facebook-btn">Share on Facebook</button>
+    <button onclick="shareOnTwitter()" class="shareButton twitter-btn">Share on X (Twitter)</button>
+    <button onclick="copyUrlToClipboard()" class="shareButton plain-share-btn">Copy URL to Clipboard</button>
+    <button onclick="downloadCharts()" class="shareButton plain-share-btn">Download charts as PNGs</button>
+</div>
+`);}
+document.write(`</div>`); // /mainContent
+// ================================ PLOTS
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(onChartsLoadCallback);
+
+const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
+const PLOT_PADDING = 50;
+const COMMON_PLOT_OPTIONS = {
+    width: 600,
+    height: 800,
+    titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+    },
+    bar: {groupWidth: "75%"},
+    legend: { position: "none" },
+    tooltip: {isHtml: true},
+    hAxis: {
+        format: 'percent'
+    },
+    annotations: {
+        alwaysOutside: false
+    },
+    animation: {
+        duration: 100,
+        easing: 'out',
+    },
+};
+
+function toPlotTooltipString(text, p) {
+    return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
+}
+function onChartsLoadCallback() {
+    setupTotalPlot();
+    setupDetailPlot();
+}
+var totalChart = null;
+function setupTotalPlot() {
+    totalChart = new google.visualization.BarChart(document.getElementById(idTotalPlot));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Outcome');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
+
+    var options = {
+        ...COMMON_PLOT_OPTIONS,
+        title: "Total Probabilities",
+        hAxis: {
+            format: 'percent'
+        },
+        chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+    };
+    let millis = null;
+
+    function updateChartData() {
+        const newMillis = CHART_CATEGORIES.map(categoy => 
+            nodes.filter(node => node.type === categoy).map(node => Math.round(node.p*1000)).reduce((a, b) => a + b, 0)
+        );
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+
+        data.removeRows(0, data.getNumberOfRows());
+        CHART_CATEGORIES.map((categoy, i) => {
+            const p = millis[i]/1000.0;
+            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
+        });
+        totalChart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+
+    // Update plots at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+}
+
+function sortByKey(array, keyFunction) {
+    return array.sort((a, b) => {
+        var x = keyFunction(a); var y = keyFunction(b);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+var detailChart = null;
+function setupDetailPlot() {
+    detailChart = new google.visualization.BarChart(document.getElementById(idDetailPlot));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Outcome');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
+
+    var options = {
+        ...COMMON_PLOT_OPTIONS,
+        title: "Detailed Probabilities",
+        hAxis: {
+            format: 'percent',
+        },
+        chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+    };
+
+    let millis = null;
+    function updateChartData() {
+        const newMillis = nodes.map(node => Math.round(node.p*1000));
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type) && node.p > 0).map(node => {
+            return {
+                p: node.p,
+                text: node.formatTextForPlots(),
+                typeIndex: CHART_CATEGORIES.indexOf(node.type),
+                color: COLORS[node.type],
+            };
+        });
+        sortByKey(newData, d => -d.p);
+        sortByKey(newData, d => d.typeIndex);
+
+        data.removeRows(0, data.getNumberOfRows());
+        newData.map(d => {
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipString(d.text, d.p)]);
+        });
+        detailChart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+
+    // Update plots at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+}
+// ================================ FUNCTIONS / LOGIC
+const canvas = document.querySelector('canvas');
+canvas.width = CANVAS_WIDTH;
+canvas.height = CANVAS_HEIGHT;
+const ctx = canvas.getContext('2d');
+
+function handleNodeClick(index) {
+    probabilityRootNodeIndex = index;
+    updateEverything();
+}
+function handleNodeHover(index) {
+    hoveredNodeIndex = index;
+    updateEverything();
+}
+function updateEverything() {
+    updateUrl();
+    updateProbabilities();
+    updateNodeStyles();
+    drawArrows();
+    updateSidebarStyles();
+}
+function updateSidebarStyles() {
+    for (let i = 0; i < Q; i++) {
+        let sliderContainer = document.getElementById(idSliderContainer + i);
+        sliderContainer.style.border = '5px solid ' + getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
+    }
+}
+function updateUrl() {
+    let sliderValues = '';
+    for (let i = 0; i < Q; i++) {
+        sliderValues += document.getElementById(idSliderInput + i).value;
+        if (i + 1 < Q) {
+            sliderValues += 'i';
+        }
+    }
+    let params = new URLSearchParams(window.location.search);
+    params.set('p', sliderValues);
+    window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
+}
+function updateProbabilities() {
+    let sliderProbs = [];
+    for (let i = 0; i < Q; i++) {
+        sliderProbs.push(parseInt(document.getElementById(idSliderInput + i).value)/100.0);
+    }
+    nodes[probabilityRootNodeIndex].p = 1.0;
+    let np = new Map([[probabilityRootNodeIndex, 1.0]]);
+    let ep = new Map();
+    function pNode(nIndex) {
+        if (np.has(nIndex)) {
+            return np.get(nIndex);
+        }
+        let p = (adj.get(nIndex)||[]).map(eIndex => pEdge(eIndex)).reduce((a, b) => a + b, 0.0);
+        np[nIndex] = p;
+        nodes[nIndex].p = p;
+        return p;
+    }
+    function pEdge(eIndex) {
+        if (ep.has(eIndex)) {
+            return ep.get(eIndex);
+        }
+        let edge = edges[eIndex];
+        let pParent = pNode(edge.source);
+        let p = 1.0;
+        if (edge.yn !== E100) {
+            let pSlider = sliderProbs[normalNodesIndices.indexOf(edge.source)];
+            mycheck(pSlider, `No slider value for node ${edge.source} from edge ${eIndex}`);
+            p = edge.yn === YES ? pSlider : 1.0 - pSlider;
+        }
+        p *= pParent;
+        ep.set(eIndex, p);
+        edges[eIndex].p = p;
+        return p;
+    }
+    for (let i = 0; i < N; i++) {
+        pNode(i);
+    }
+    for (let i = 0; i < E; i++) {
+        pEdge(i);
+    }     
+}
+function updateNodeStyles() {
+    for (let i = 0; i < N; i++) {
+        let nodeBox = document.getElementById(idNodeBoxDiv+i);
+        let nodeText = document.getElementById(idNodeTextDiv+i);
+        nodeBox.style.width = (parseFloat(window.getComputedStyle(nodeText).width) + 16) + 'px';
+        nodeBox.style.height =(parseFloat(window.getComputedStyle(nodeText).height) + 16) + 'px';
+        nodeBox.style.opacity = toNodeAlpha(nodes[i].p, i);
+        nodeText.style.opacity = toNodeAlpha(nodes[i].p, i);
+        nodeText.style.fontWeight = toFontWeight(nodes[i].p, i);
+        nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p, i) + 'px';
+        nodeBox.style.borderColor = getNodeHighlightColorOrDefault(i, 'black');
+        const probString = Math.round(nodes[i].p*100).toString()
+        const paddedPropString = "&nbsp;".repeat(3-probString.length) + probString;
+        nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPropString}]`);
+    }
+}
+function getNodeHighlightColorOrDefault(i, defaultValue) {
+    if (i == probabilityRootNodeIndex) {
+        return NODE_HIGHLIGHT_COLOR;
+    } else if (i == hoveredNodeIndex) {
+        return NODE_HOVER_COLOR;
+    } else {
+        return defaultValue;
+    }
+}
+function drawArrows() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const canvasRect = document.getElementById(`canvas-container`).getBoundingClientRect()
+    for (let i = 0; i < E; i++) {
+        const edge = edges[i];
+        const box1 = document.getElementById(idNodeBoxDiv+edge.source);
+        const box2 = document.getElementById(idNodeBoxDiv+edge.target);
+        const rect1 = box1.getBoundingClientRect();
+        const rect2 = box2.getBoundingClientRect();
+        let x1 = rect1.left - canvasRect.left + rect1.width / 2;
+        let y1 = rect1.top - canvasRect.top + rect1.height / 2;
+        let x2 = rect2.left - canvasRect.left + rect2.width / 2;
+        let y2 = rect2.top - canvasRect.top + rect2.height / 2;
+        let dx = parseFloat(x2) - x1;
+        let dy = parseFloat(y2) - y1;
+        // Make arrow endpoints align with mid-line or corner points of the boxes.
+        if (dx > rect1.width / 2) {
+            x1 += rect1.width / 2;
+        } else if (dx < -rect1.width / 2) {
+            x1 -= rect1.width / 2;
+        }
+        if (dy > rect1.height / 2) {
+            y1 += rect1.height / 2;
+        } else if (dy < -rect1.height / 2) {
+            y1 -= rect1.height / 2;
+        }
+        if (dx > (rect1.width + rect2.width) / 2) {
+            x2 -= rect2.width / 2;
+        } else if (dx < -(rect1.width + rect2.width) / 2) {
+            x2 += rect2.width / 2;
+        }
+        if (dy > (rect1.height + rect2.height) / 2) {
+            y2 -= rect2.height / 2;
+        } else if (dy < -(rect1.height + rect2.height) / 2) {
+            y2 += rect2.height / 2;
+        }
+        x1 -= 1; // for some reasons these are needed to make the arrows look perfectly aligned.
+        x2 -= 1;
+        y1 -= 1;
+        y2 -= 1;
+
+        updateEdgeLabel(i, x1, y1, x2, y2);
+
+        dx = parseFloat(x2) - x1; // calculate line offset for arrow head
+        dy = parseFloat(y2) - y1;
+        let dlen = Math.sqrt(dx*dx + dy*dy);
+        dx = dx / dlen * toArrowHeadLen(edge.p) * 0.866;
+        dy = dy / dlen * toArrowHeadLen(edge.p) * 0.866;
+        
+        // Draw the line
+        ctx.beginPath();
+        ctx.moveTo(x1 - canvas.offsetLeft, y1 - canvas.offsetTop);
+        // Retract the line end a bit so that it doesn't overlap the arrow head.
+        ctx.lineTo(x2 - canvas.offsetLeft - dx, y2 - canvas.offsetTop - dy);
+        ctx.strokeStyle = `rgba(0, 0, 0, ${toAlpha(edge.p)}`;
+        ctx.lineWidth = toArrowWidth(edge.p);
+        ctx.stroke();
+
+        // Draw the arrow head
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const headlen = toArrowHeadLen(edge.p);  // length of head in pixels
+        ctx.beginPath();
+        ctx.moveTo(x2 - canvas.offsetLeft, y2 - canvas.offsetTop);
+        ctx.lineTo(x2 - canvas.offsetLeft - headlen * Math.cos(angle - Math.PI / 6), y2 - canvas.offsetTop - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - canvas.offsetLeft - headlen * Math.cos(angle + Math.PI / 6), y2 - canvas.offsetTop - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.lineTo(x2 - canvas.offsetLeft, y2 - canvas.offsetTop);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(0, 0, 0, ${toAlpha(edge.p)}`;
+        ctx.fill();
+    }
+}
+function setSlidersFromString(s) {
+    if (undoStack.length == 0 || undoStack[undoStack.length-1] !== s) {
+        undoStack.push(s); // Add initial state, or if the state is different from the current state.
+    }
+    let parts = s.split('i');
+    for (let i = 0; i < Q; i++) {
+        let slider = document.getElementById(idSliderInput + i);
+        let textbox = document.getElementById(idSliderNumberBox + i);
+        const value = parseInt(parts[i]);
+        slider.value = isRealNumber(value) ? value : SLIDER_DEFAULT_VALUE;
+        textbox.value = slider.value;
+    }
+    updateEverything();
+}
+function updateEdgeLabel(i, x1, y1, x2, y2) {
+    const edgeLabel = document.getElementById(idEdgeLabel+i);
+    let dx = y2 - y1;
+    let dy = x1 - x2;
+    const norm = Math.sqrt(dx*dx + dy*dy);
+    const offset = 12;
+    const flipSign = dy > 0;
+    dx = dx / norm * offset * (flipSign ? -1 : 1);
+    dy = dy / norm * offset * (flipSign ? -1 : 1);
+    const angle = Math.atan2(y2 - y1, x2 - x1) + (flipSign? Math.PI : 0);
+    edgeLabel.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+    const x3 = dx + x1 + (x2 - x1) * 0.4;
+    const y3 = dy + y1 + (y2 - y1) * 0.4;
+    edgeLabel.style.left = x3 + 'px';
+    edgeLabel.style.top = y3 + 'px';
+    edgeLabel.style.opacity = toAlpha(edges[i].p);
+    edgeLabel.style.fontWeight = toFontWeight(edges[i].p);
+    let label = edges[i].yn === E100 ? "" : (edges[i].yn+"=")
+    if (edges[i].yn !== E100) {
+        const sourceSliderProb = parseInt(document.getElementById(idSliderInput + normalNodesIndices.indexOf(edges[i].source)).value);
+        label += edges[i].yn === YES ? sourceSliderProb : (100-sourceSliderProb);            
+    }
+    edgeLabel.textContent = label;
+}
+function addCurrentValuesToUndoStack() {
+    let sliderValues = '';
+    for (let i = 0; i < Q; i++) {
+        sliderValues += document.getElementById(idSliderInput + i).value;
+        if (i + 1 < Q) {
+            sliderValues += 'i';
+        }
+    }
+    undoStack.push(sliderValues);
+}
+function performUndo() {
+    if (undoStack.length > 1) {
+        undoStack.pop();
+        setSlidersFromString(undoStack[undoStack.length-1]);
+    }
+}
+
+let urlParam = new URLSearchParams(window.location.search).get('p') || '';
+setSlidersFromString(urlParam);
+
+window.onload = function () {
+    // Slider listeners.
+    for (let i = 0; i < Q; i++) {
+        let slider = document.getElementById(idSliderInput + i);
+        let textbox = document.getElementById(idSliderNumberBox + i);
+        // add slider callback for releasing the mouse button
+        slider.addEventListener('change', function () {
+            addCurrentValuesToUndoStack();
+        });
+        textbox.addEventListener('change', function () {
+            addCurrentValuesToUndoStack();
+        });
+        slider.addEventListener('input', function () {
+            textbox.value = slider.value;
+            updateEverything();
+        });
+        textbox.addEventListener('input', function () {
+            if (textbox.value < 0) {
+                textbox.value = 0;
+            } else if (textbox.value > 100) {
+                textbox.value = 100;
+            }
+            slider.value = textbox.value;
+            updateEverything();
+        });
+    }
+    updateEverything();
+};
+window.onresize = updateEverything;
+    
+</script>
+</body>
+</html>
