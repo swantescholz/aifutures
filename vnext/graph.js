@@ -1,15 +1,16 @@
-const AUTHORS_ESTIMATES = "1i50i70i55i2i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4";
+const AUTHORS_ESTIMATES = "50i70i55i95i55i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4";
 const NODES_STR = `
-s;sstart;6;6;START|HERE|
-n;ntry-stop1;8;6;Does humanity permanently fully stop frontier AI development soon?
+s;sstart;4;6;START|HERE|
 a;adune;12;6;Advanced AI is permanently banned
-n;ncapabilities-plateau;6.5;8;Will current AI approaches plateau before AGI-level capabilities?
-n;nnew-approaches;8;10;Will new approaches unlock AGI-level capabilities?
-a;aai-winter;6;10;Permanent AI winter
+n;ncapabilities-plateau;4;8;Will current AI approaches plateau before AGI-level capabilities?
+n;nnew-approaches;6;10;Will new approaches unlock AGI-level capabilities?
+a;aai-winter;4;10;Permanent AI winter
+n;npause;6;8;Will we pause AI capabilities research before AGI?
+i;ipause;8;6;Pause allows more safety research and other precautions
+n;ncontinue;10;6;Will we continue AI capabilities research after a pause?
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
 n;ncatastrophe;10;10;Does a pre-AGI catastrophe occur (e.g. AI misuse via cyber- or bio-weapons)?
-i;icatastrophy-occurs;11;12;pre-AGI catastrophe does occur!
-n;ntry-stop2;12;14;Does humanity permanently fully stop frontier AI development (after catastrophe)?
+i;icatastrophy-occurs;12;12;Pre-AGI catastrophe does occur!
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
 n;nagi-transformative;8;12;Will AGI become transformative?
 a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
@@ -40,18 +41,19 @@ e;esuffering;8;24;Astronomical suffering
 `.trim();
 
 const EDGES_STR = `
--;sstart;ntry-stop1
-y;ntry-stop1;adune
-n;ntry-stop1;ncapabilities-plateau
-n;ncapabilities-plateau;ireach-catastrophic-potential
+-;sstart;ncapabilities-plateau
+n;ncapabilities-plateau;npause
 y;ncapabilities-plateau;nnew-approaches
-y;nnew-approaches;ireach-catastrophic-potential
+y;nnew-approaches;npause
 n;nnew-approaches;aai-winter
+y;npause;ipause
+n;npause;ireach-catastrophic-potential
+-;ipause;ncontinue
+y;ncontinue;ireach-catastrophic-potential
+n;ncontinue;adune
 -;ireach-catastrophic-potential;ncatastrophe
 y;ncatastrophe;icatastrophy-occurs
--;icatastrophy-occurs;ntry-stop2
-y;ntry-stop2;adune
-n;ntry-stop2;iagi-exists
+-;icatastrophy-occurs;iagi-exists
 n;ncatastrophe;iagi-exists
 -;iagi-exists;nagi-transformative
 y;nagi-transformative;nalignment-theory
