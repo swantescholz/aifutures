@@ -12,7 +12,7 @@ n;ncatastrophe;10;10;Does a pre-AGI catastrophe occur (e.g. AI misuse via cyber-
 i;icatastrophy-occurs;11;12;pre-AGI catastrophe does occur!
 n;ntry-stop2;12;14;Does humanity permanently fully stop frontier AI development (after catastrophe)?
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
-n;nagi-transformative;8;12;Is AGI transformative?
+n;nagi-transformative;8;12;Will AGI become transformative?
 a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
 n;nalignment-theory;8;14;Do we have a practical solution for AGI alignment?
 n;nimplement-alignment1;6;14;Will the first AGI lab implement alignment correctly?
