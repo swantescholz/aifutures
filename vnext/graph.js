@@ -3,8 +3,7 @@ const NODES_STR = `
 s;sstart;6;6;START|HERE|
 n;ntry-stop1;8;6;Does humanity permanently fully stop frontier AI development soon?
 a;adune;12;6;Advanced AI is permanently banned
-i;iresearch-continues;6;8;AI research continues
-n;ncapabilities-plateau;8;8;Will current AI approaches plateau before AGI-level capabilities?
+n;ncapabilities-plateau;6.5;8;Will current AI approaches plateau before AGI-level capabilities?
 n;nnew-approaches;8;10;Will new approaches unlock AGI-level capabilities?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
@@ -43,8 +42,7 @@ e;esuffering;8;24;Astronomical suffering
 const EDGES_STR = `
 -;sstart;ntry-stop1
 y;ntry-stop1;adune
-n;ntry-stop1;iresearch-continues
--;iresearch-continues;ncapabilities-plateau
+n;ntry-stop1;ncapabilities-plateau
 n;ncapabilities-plateau;ireach-catastrophic-potential
 y;ncapabilities-plateau;nnew-approaches
 y;nnew-approaches;ireach-catastrophic-potential
