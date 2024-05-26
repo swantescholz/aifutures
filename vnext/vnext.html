@@ -12,6 +12,7 @@
 <body>
 <script type="text/javascript">
 // ================================ CONSTANTS
+const DEV_MODE = true;
 // Edge types
 const YES = 'y';
 const NO = 'n';
@@ -225,7 +226,7 @@ edges.map((edge, eIndex) => {
 });
 
 // ================================ HEADER / INSTRUCTIONS
-if (true) { // mytodo
+if (!DEV_MODE) {
 document.write(`
 <div id="mainContent">
 <h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom" target="_blank">swantescholz.github.io/aidoom</a>)</h1>
@@ -359,7 +360,7 @@ document.write(`
 `);
 document.write(`</div>`); // /layoutRow2
 // ================================ SHARING / EXPORT
-if (true) { // mytodo
+if (!DEV_MODE) {
 document.write(`
 <div id="shareRow">
 <h1>Share this page:</h1>

@@ -1,14 +1,14 @@
 const NODES_STR = `
 s;sstart;8;6;START|HERE|
-n;ntry-stop1;10;6;Humanity permanently fully stops frontier AI development soon?
-a;adune;12;6;"Dune"-scenario: Advanced AI is permanently banned
+n;ntry-stop1;10;6;Does humanity permanently fully stop frontier AI development soon?
+a;adune;12;6;Advanced AI is permanently banned
 i;iresearch-continues;8;8;AI research continues
 n;ncapabilities-plateau;8;10;Will frontier AI capabilities plateau before AGI?
 a;aai-winter;6;10;Permanent AI winter
 i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
-n;ncatastrophe;10;10;pre-AGI catastrophe occurs (e.g. AI misuse via cyber- or bio-weapons)?
+n;ncatastrophe;10;10;Does a pre-AGI catastrophe occur (e.g. AI misuse via cyber- or bio-weapons)?
 i;ccatastrophy-occurs;11;12;pre-AGI catastrophe does occur!
-n;ntry-stop2;12;14;Humanity permanently fully stops frontier AI development (after catastrophe)?
+n;ntry-stop2;12;14;Does humanity permanently fully stop frontier AI development (after catastrophe)?
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
 n;nagi-transformative;8;12;Is AGI transformative?
 a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
@@ -34,7 +34,7 @@ n;ncan-destroy-it;12;20;Can we destroy it?
 n;nbenefit-extinction;12;22;Does it benefit from our extinction?
 e;eagi-kills-us;12;24;AGI-initiated human extinction
 n;nbenefit-suffering;10;24;Does it benefit from our suffering?
-e;emedium-dystopia;10;22;"WALL-E" AI dystopia: humans survive, but AI is in control
+e;emedium-dystopia;10;22;AI dystopia: humans survive, but AI is in control
 e;esuffering;8;24;Astronomical suffering
 `.trim();
 
