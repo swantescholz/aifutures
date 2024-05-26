@@ -52,10 +52,12 @@ const idDetailPlot = 'idDetailPlot';
 const idTotalPlot = 'idTotalPlot';
 
 // Other constants
+const NODE_LABEL_POSITION_FACTOR=0.35;
 const XSCALE = 1.0;
 const SLIDER_DEFAULT_VALUE = 50;
 const OUTCOME_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
 const OUTCOME_HEADERS = ["Existential Catastrophe", "Ambivalent Outcome", "Good Outcome"];
+const INTERMEDIATE_NODES_FOR_CHARTS = ["icatastrophy-occurs","ialigned-agi","imisaligned-agi","imultipolar"];
 const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
 const CANVAS_WIDTH = 1200;
@@ -323,7 +325,7 @@ document.write(`
 </div>
 <hr><h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('1i15i55i2i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4')">Author's estimates</button>
+<button onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
 <button onclick="performUndo()">Undo</button>
 <hr>`);// mytodo update my probabilities.
 
@@ -475,17 +477,20 @@ function setupDetailPlot() {
     };
 
     let millis = null;
+    function shouldIncludeNode(node) {
+        return node.p > 0 && (CHART_CATEGORIES.includes(node.type) || INTERMEDIATE_NODES_FOR_CHARTS.includes(node.id));
+    }
     function updateChartData() {
         const newMillis = nodes.map(node => Math.round(node.p*1000));
         if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
             return; // no changes
         }
         millis = newMillis;
-        const newData = nodes.filter(node => CHART_CATEGORIES.includes(node.type) && node.p > 0).map(node => {
+        const newData = nodes.filter(shouldIncludeNode).map(node => {
             return {
                 p: node.p,
                 text: node.formatTextForPlots(),
-                typeIndex: CHART_CATEGORIES.indexOf(node.type),
+                typeIndex: CHART_CATEGORIES.indexOf(node.type) !== -1 ? CHART_CATEGORIES.indexOf(node.type) : 9,
                 color: COLORS[node.type],
             };
         });
@@ -704,8 +709,8 @@ function updateEdgeLabel(i, x1, y1, x2, y2) {
     dy = dy / norm * offset * (flipSign ? -1 : 1);
     const angle = Math.atan2(y2 - y1, x2 - x1) + (flipSign? Math.PI : 0);
     edgeLabel.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
-    const x3 = dx + x1 + (x2 - x1) * 0.4;
-    const y3 = dy + y1 + (y2 - y1) * 0.4;
+    const x3 = dx + x1 + (x2 - x1) * NODE_LABEL_POSITION_FACTOR;
+    const y3 = dy + y1 + (y2 - y1) * NODE_LABEL_POSITION_FACTOR;
     edgeLabel.style.left = x3 + 'px';
     edgeLabel.style.top = y3 + 'px';
     edgeLabel.style.opacity = toAlpha(edges[i].p);
