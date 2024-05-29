@@ -127,7 +127,7 @@ input[type="range"] {
 .nodeBox {
     position: absolute;
     border: 1px solid black;
-    width: 100px;
+    width: 110px;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     opacity: 0;
@@ -135,7 +135,7 @@ input[type="range"] {
 .nodeText {
     position: absolute;
     text-align: center;
-    width: 84px;
+    width: 94px;
     transform: translate(-50%, -50%);
 }
 .edge-label {
