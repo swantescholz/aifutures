@@ -1,16 +1,17 @@
-const AUTHORS_ESTIMATES = "50i70i55i95i55i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4";
+const AUTHORS_ESTIMATES = "50i70i25i96i55i5i95i75i65i40i65i20i60i75i75i10i30i95i3i97i4";
 const NODES_STR = `
 s;sstart;4;6;START|HERE|
 a;adune;12;6;Advanced AI is permanently banned
 n;ncapabilities-plateau;4;8;Will current AI approaches plateau before AGI-level capabilities?
 n;nnew-approaches;6;10;Will new approaches unlock AGI-level capabilities?
 a;aai-winter;4;10;Permanent AI winter
-n;npause;6;8;Will we pause AI capabilities research before AGI?
+n;npause;6;7;Will we pause advancing AI capabilities before they reach catastrophic potential?
 i;ipause;8;6;Pause allows more safety research and other precautions
 n;ncontinue;10;6;Will we continue AI capabilities research after a pause?
-i;ireach-catastrophic-potential;10;8;Frontier AI reaches capabilities with catastrophic potential
+i;ireach-catastrophic-potential;9;8;Frontier AI reaches capabilities with catastrophic potential
 n;ncatastrophe;10;10;Does a pre-AGI catastrophe occur (e.g. AI misuse via cyber- or bio-weapons)?
-i;icatastrophy-occurs;12;12;Pre-AGI catastrophe does occur!
+i;icatastrophy-occurs;11;8;Pre-AGI catastrophe does occur!
+n;nstop;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
 i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
 n;nagi-transformative;8;12;Will AGI become transformative?
 a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
@@ -53,7 +54,9 @@ y;ncontinue;ireach-catastrophic-potential
 n;ncontinue;adune
 -;ireach-catastrophic-potential;ncatastrophe
 y;ncatastrophe;icatastrophy-occurs
--;icatastrophy-occurs;iagi-exists
+-;icatastrophy-occurs;nstop
+n;nstop;iagi-exists
+y;nstop;adune
 n;ncatastrophe;iagi-exists
 -;iagi-exists;nagi-transformative
 y;nagi-transformative;nalignment-theory
