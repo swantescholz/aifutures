@@ -12,23 +12,23 @@ i;ireach-catastrophic-potential;9;8;Frontier AI reaches capabilities with catast
 n;ncatastrophe;10;10;Does a pre-AGI catastrophe occur (e.g. AI misuse via cyber- or bio-weapons)?
 i;icatastrophy-occurs;11;8;Pre-AGI catastrophe does occur!
 n;nstop;12;10;Humanity permanently fully stops frontier AI development (after catastrophe)?
-i;iagi-exists;10;14;Research towards AGI continues. First AGI exists
-n;nagi-transformative;8;12;Will AGI become transformative?
-a;anon-transformative-agi;6;12;Powerful, but not transformative AGI
-n;nalignment-theory;8;14;Do we have a practical solution for AGI alignment?
-n;nimplement-alignment1;6;14;Will the first AGI lab implement alignment correctly?
-n;nprevent-other-agis;4;14;Will the first AGI prevent other AGIs from appearing?
+i;iagi-exists;12;12;Research towards AGI continues. First AGI exists
+n;nagi-transformative;10;12;Will AGI become transformative?
+a;anon-transformative-agi;8;12;Powerful, but not transformative AGI
+n;nalignment-theory;10;14;Do we have a practical solution for AGI alignment?
+n;nimplement-alignment1;8;14;Will the first AGI lab implement alignment correctly?
+n;nprevent-other-agis;6;14;Will the first AGI prevent other AGIs from appearing?
 n;nimplement-alignment2;6;16;Will all other AGI labs implement alignment correctly?
-i;imultipolar;7;17.5;Multiple conflicting AGIs exist
+i;imultipolar;8;16;Multiple conflicting AGIs exist
 i;ialigned-agi;4;16;Aligned AGI
 n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
-g;gagi-utopia2;4;20;AGI utopia
-n;ncontrollers-thoughtful;6;18;Are AGI controllers wise enough to avoid unintended consequences?
-n;nagi-protects;8;20;Does AGI protect its users?
-e;estupid-xrisk;8;22;Accidental human extinction
+g;gagi-utopia2;6;18;AGI utopia
+n;ncontrollers-thoughtful;4;20;Are AGI controllers wise enough to avoid unintended consequences?
+n;nagi-protects;4;22;Does AGI protect its users?
+e;estupid-xrisk;4;24;Accidental human extinction
 n;ncontrollers-good;6;20;Do AGI controllers have good intentions?
 e;eauthoritarian-dystopia;6;22;Authoritarian dystopia
-i;imisaligned-agi;8;16;(At least one)|Misaligned AGI
+i;imisaligned-agi;10;16;(At least one)|Misaligned AGI
 n;nfigure-misaligned;8;18;Do we figure out right away that it's misaligned?
 n;nturn-off;10;18;Can we easily turn it off?
 a;asecond-chance;12;18;We get a second chance at building AGI
@@ -36,9 +36,9 @@ n;nharming-us;10;20;Is it harming us?
 n;ncan-destroy-it;12;20;Can we destroy it?
 n;nbenefit-extinction;12;22;Does it benefit from our extinction?
 e;eagi-kills-us;12;24;AGI-initiated human extinction
-n;nbenefit-suffering;10;24;Does it benefit from our suffering?
-e;emedium-dystopia;10;22;AI dystopia: humans survive, but AI is in control
-e;esuffering;8;24;Astronomical suffering
+n;nbenefit-suffering;10;22;Does it benefit from our suffering?
+e;emedium-dystopia;10;24;AI dystopia: humans survive, but AI is in control
+e;esuffering;8;22;Astronomical suffering
 `.trim();
 
 const EDGES_STR = `
