@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map of AI Doom</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="graph.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map of AI Doom</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<link href='https://fonts.googleapis.com/css?family=Plus Jakarta Sans' rel='stylesheet'>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="graph.js"></script>
 </head>
 
 <body>
 <script type="text/javascript">
 // ================================ CONSTANTS
-const DEV_MODE = false;
+const DEV_MODE = true;
 // Edge types
 const YES = 'y';
 const NO = 'n';
@@ -77,19 +78,19 @@ function toNodeAlpha(p, i) {
 function toAlpha(p) {
     if (document.getElementById('transparentPathsCheckbox').checked) {
         const minAlpha = parseInt(document.getElementById(idMinOpacitySlider).value) / 100.0;
-        return interpolateFast(p, minAlpha, 1.0);
+        return interpolate(p, minAlpha, 1.0);
     }
     return 1.0;
 }
 function toArrowWidth(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
-        return Math.round(interpolateFast(p, 1, 5));
+        return Math.round(interpolate(p, 1, 5));
     }
     return 3;
 }
 function toArrowHeadLen(p) {
     if (document.getElementById('boldPathsCheckbox').checked) {
-        return Math.round(interpolateFast(p, 8, 25));
+        return Math.round(interpolate(p, 8, 25));
     }
     return 16;
 }
@@ -98,22 +99,22 @@ function toNodeBorderWidth(p, i) {
         return 5;
     }
     if (document.getElementById('boldPathsCheckbox').checked) {
-        return Math.round(interpolateFast(p, 1, 5));
+        return Math.round(interpolate(p, 1, 5));
     }
     return 3;
 }
 function toFontWeight(p, i) {
-    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
-        return 900;
-    }
-    if (document.getElementById('boldPathsCheckbox').checked) {
-        return Math.round(interpolateFast(p, 100, 900));
-    }
-    return 600;
+    // if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+    //     return 900;
+    // }
+    // if (document.getElementById('boldPathsCheckbox').checked) {
+    //     return Math.round(interpolate(p, 100, 900));
+    // }
+    return 800;
 }
-function interpolateFast(p, min, max) {
+function interpolate(p, min, max) {
     p = clamp01(p);
-    p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
+    // p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
     return min + (max - min) * p; // linear interpolation between min and max
 }
 
@@ -153,9 +154,7 @@ function mycheck(value, message) {
         throw new Error('Value is null or undefined. Error message: ' + message);
     }
 }
-
 // ================================ SETUP
-
 let gNodeIndex = 0;
 class Node {
     constructor(line) {
@@ -314,7 +313,10 @@ document.write(`
 <h2>Settings</h2>
 <div class="slider-container-inner"> 
     <p style="padding-left: 5px">Make more likely paths bolder?</p>
-    <input type="checkbox" id="boldPathsCheckbox" onclick="updateEverything()" checked>
+    <label class="switch">
+        <input type="checkbox" id="boldPathsCheckbox" onclick="updateEverything()" checked>
+        <span class="slider round"></span>
+    </label>
 </div>
 <div class="slider-container-inner"> 
     <p style="padding-left: 5px">Make less likely paths transparent?</p>
@@ -324,11 +326,12 @@ document.write(`
     <p style="padding-left: 5px">Minimum opacity?</p>
     <input type="range" id="${idMinOpacitySlider}" min="0" max="100" value="20" oninput="updateEverything()">
 </div>
-<hr><h2>Conditional Probabilities</h2>
+<div style="height: 32px;"></div>
+<h2>Conditional Probabilities</h2>
 <button onclick="setSlidersFromString('')">Reset all to 50%</button>
 <button onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
 <button onclick="performUndo()">Undo</button>
-<hr>`);// mytodo update my probabilities.
+`); // mytodo update my probabilities.
 
 for (let i = 0; i < Q; i++) {
     document.write(`

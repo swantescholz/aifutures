@@ -1,8 +1,19 @@
+:root {
+    --corner-radius-s: 8px; /* Nodes, FAQ boxes,  */
+    --corner-radius-m: 12px; /* Containers, plot bars */
+    --corner-radius-l: 16px; /* Chips, "Take action today", Footer */
+    --text-color-primary: #FFFFFF; /* White */
+    --text-color-secondary: #FFFFFF99; /* 60% white */
+}
 body, html {
     height: 100%;
     margin: 10px;
-    font-family: monospace;
-    font-size: smaller;
+    font-family: 'Plus Jakarta Sans', sans-serif;    
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    color: var(--text-color-primary);
+    background-color: #0C0A16;
 }
 canvas {
     position: absolute;
@@ -48,16 +59,36 @@ input[type="range"] {
     margin: 5px;
 }
 #slider-container-outer {
-    max-width: 300px;
-    padding: 10px;
-    border: 1px solid black;
+    width: 350px;
+    padding: 16px;
     flex-shrink: 0;
     margin: 5px 0;
+    border-radius: var(--corner-radius-m);
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    background: #0C0A16;
 }
 #shareRow {
     display: flex;
     align-items: center; 
     margin: 10px;
+}
+.sliderContainerSectionTitle {
+    font-size: 28px;
+}
+.settingsLabel {
+    font-size: 16px;
+}
+.slider-container-inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #0c0a16;
+}
+.sliderQuestion {
+    margin: 0px 0px 3px 0px;
+    padding: 0px;
+    font-size: 16px;
+    line-height: 140%;
 }
 .shareButton {
     margin: 10px;
@@ -89,10 +120,6 @@ input[type="range"] {
 }
 .facebook-btn:hover {
     background-color: #365899; /* Darker blue on hover */
-}
-.sliderQuestion {
-    margin: 0px 0px 3px 0px;
-    padding: 0px;
 }
 .accordion-header {
     background-color: #f1f1f1;
@@ -147,8 +174,43 @@ input[type="range"] {
     text-align: right;
     width: 30px;
 }
-.slider-container-inner {
-    width: 100%;
-    display: flex;
-    align-items: center;
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFFFFF1A;
+    transition: .4s;
+    border-radius: 22px;
+}
+.slider:before { /* The white circle in the switch. */
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #FFFFFF99;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #1E90FF;
+}
+input:checked + .slider:before {
+    background-color: white;
+    transform: translateX(20px);
 }
