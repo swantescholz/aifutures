@@ -308,7 +308,7 @@ for (var i = 0; i < acc.length; i++) {
 // ================================ ROW 1
 document.write(`<div id="layoutRow1">`);
 // Settings
-document.write(`<div id=slider-container-outer>`); // slider
+document.write(`<div id=controlPanel>`); // slider
 document.write(`
 <div class="sliderContainerSectionTitle">Settings</div>
 <div class="settingContainer"> 
@@ -340,7 +340,7 @@ document.write(`
 <button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
 </div>
 `); // mytodo update my probabilities.
-
+document.write(`<div class="allSlidersContainer">`);
 for (let i = 0; i < Q; i++) {
     document.write(`
 <div id=${idSliderContainer+i} class="questionAndSliderBox" onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
@@ -351,7 +351,7 @@ for (let i = 0; i < Q; i++) {
 </div></div>
 `);
 }
-document.write('</div>'); // /slider
+document.write('</div></div>'); // /control panel
 document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; height: ${CANVAS_HEIGHT}px">`);
 document.write(`<canvas></canvas>`);
 nodes.map(node => {
@@ -540,7 +540,9 @@ function updateEverything() {
 function updateSidebarStyles() {
     for (let i = 0; i < Q; i++) {
         let sliderContainer = document.getElementById(idSliderContainer + i);
-        sliderContainer.style.border = '5px solid ' + getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
+        // update border color only
+        // sliderContainer
+        // sliderContainer.style.border = '5px solid ' + getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
     }
 }
 function updateUrl() {
