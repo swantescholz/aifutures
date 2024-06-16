@@ -51,6 +51,8 @@ const idMinOpacitySlider = 'idMinOpacitySlider';
 const idEdgeLabel = 'idEdgeLabel';
 const idDetailPlot = 'idDetailPlot';
 const idTotalPlot = 'idTotalPlot';
+const idBoldPathsCheckbox = 'boldPathsCheckbox';
+const idTransparentPathsCheckbox = 'transparentPathsCheckbox';
 
 // Other constants
 const NODE_LABEL_POSITION_FACTOR=0.3;
@@ -76,20 +78,20 @@ function toNodeAlpha(p, i) {
     return toAlpha(p);
 }
 function toAlpha(p) {
-    if (document.getElementById('transparentPathsCheckbox').checked) {
+    if (document.getElementById(idTransparentPathsCheckbox).checked) {
         const minAlpha = parseInt(document.getElementById(idMinOpacitySlider).value) / 100.0;
         return interpolate(p, minAlpha, 1.0);
     }
     return 1.0;
 }
 function toArrowWidth(p) {
-    if (document.getElementById('boldPathsCheckbox').checked) {
+    if (document.getElementById(idBoldPathsCheckbox).checked) {
         return Math.round(interpolate(p, 1, 5));
     }
     return 3;
 }
 function toArrowHeadLen(p) {
-    if (document.getElementById('boldPathsCheckbox').checked) {
+    if (document.getElementById(idBoldPathsCheckbox).checked) {
         return Math.round(interpolate(p, 8, 25));
     }
     return 16;
@@ -98,7 +100,7 @@ function toNodeBorderWidth(p, i) {
     if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
         return 5;
     }
-    if (document.getElementById('boldPathsCheckbox').checked) {
+    if (document.getElementById(idBoldPathsCheckbox).checked) {
         return Math.round(interpolate(p, 1, 5));
     }
     return 3;
@@ -107,7 +109,7 @@ function toFontWeight(p, i) {
     // if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
     //     return 900;
     // }
-    // if (document.getElementById('boldPathsCheckbox').checked) {
+    // if (document.getElementById(idBoldPathsCheckbox).checked) {
     //     return Math.round(interpolate(p, 100, 900));
     // }
     return 800;
@@ -310,27 +312,30 @@ document.write(`<div id="layoutRow1">`);
 // Settings
 document.write(`<div id=slider-container-outer>`); // slider
 document.write(`
-<h2>Settings</h2>
-<div class="slider-container-inner"> 
-    <p style="padding-left: 5px">Make more likely paths bolder?</p>
+<div class="sliderContainerSectionTitle">Settings</div>
+<div class="settingContainer"> 
+    Make more likely paths bolder?
     <label class="switch">
-        <input type="checkbox" id="boldPathsCheckbox" onclick="updateEverything()" checked>
+        <input type="checkbox" id="${idBoldPathsCheckbox}" onclick="updateEverything()" checked>
         <span class="slider round"></span>
     </label>
 </div>
-<div class="slider-container-inner"> 
-    <p style="padding-left: 5px">Make less likely paths transparent?</p>
-    <input type="checkbox" id="transparentPathsCheckbox" onclick="updateEverything()" checked>
+<div class="settingContainer"> 
+    Make less likely paths transparent?
+    <label class="switch">
+        <input type="checkbox" id="${idTransparentPathsCheckbox}" onclick="updateEverything()" checked>
+        <span class="slider round"></span>
+    </label>
 </div>
-<div class="slider-container-inner">
-    <p style="padding-left: 5px">Minimum opacity?</p>
+<div class="settingContainer"> 
+    Minimum opacity?
     <input type="range" id="${idMinOpacitySlider}" min="0" max="100" value="20" oninput="updateEverything()">
 </div>
-<div style="height: 32px;"></div>
-<h2>Conditional Probabilities</h2>
-<button onclick="setSlidersFromString('')">Reset all to 50%</button>
-<button onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
-<button onclick="performUndo()">Undo</button>
+<div style="height: 10px;"></div>
+<div class="sliderContainerSectionTitle">Conditional Probabilities</div>
+<button class="chipButton" onclick="setSlidersFromString('')">Reset all to 50%</button>
+<button class="chipButton" onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
+<button class="chipButton" onclick="performUndo()"><img src="res/undo.svg" class="chipButtonIcon">Undo</button>
 `); // mytodo update my probabilities.
 
 for (let i = 0; i < Q; i++) {
@@ -366,16 +371,15 @@ document.write(`
 `);
 document.write(`</div>`); // /layoutRow2
 // ================================ SHARING / EXPORT
-if (!DEV_MODE) {
 document.write(`
 <div id="shareRow">
 <h1>Share this page:</h1>
-    <button onclick="shareOnFacebook()" class="shareButton facebook-btn">Share on Facebook</button>
-    <button onclick="shareOnTwitter()" class="shareButton twitter-btn">Share on X (Twitter)</button>
-    <button onclick="copyUrlToClipboard()" class="shareButton plain-share-btn">Copy URL to Clipboard</button>
-    <button onclick="downloadCharts()" class="shareButton plain-share-btn">Download charts as PNGs</button>
+    <button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
+    <button onclick="shareOnTwitter()" class="chipButton"><img src="res/twitter.svg" class="chipButtonIcon">Share on Twitter</button>
+    <button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
+    <button onclick="downloadCharts()" class="chipButton"><img src="res/download.svg" class="chipButtonIcon">Download charts as PNGs</button>
 </div>
-`);}
+`);
 document.write(`</div>`); // /mainContent
 // ================================ PLOTS
 google.charts.load('current', {packages: ['corechart', 'bar']});

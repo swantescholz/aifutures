@@ -60,6 +60,7 @@ input[type="range"] {
 }
 #slider-container-outer {
     width: 350px;
+    font-size: 16px;
     padding: 16px;
     flex-shrink: 0;
     margin: 5px 0;
@@ -74,9 +75,15 @@ input[type="range"] {
 }
 .sliderContainerSectionTitle {
     font-size: 28px;
+    margin: 12px 0px;
 }
-.settingsLabel {
-    font-size: 16px;
+.settingContainer {
+    margin: 8px 0px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    align-self: stretch;
 }
 .slider-container-inner {
     width: 100%;
@@ -185,7 +192,7 @@ input[type="range"] {
     width: 0;
     height: 0;
 }
-.slider {
+.slider { /* The toggle background */
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -214,3 +221,38 @@ input:checked + .slider:before {
     background-color: white;
     transform: translateX(20px);
 }
+input[type='range']{ 
+    background: rgba(255, 0, 0, 0.05);
+    accent-color: #1E90FF; 
+    cursor: pointer;
+}
+.chipButton {
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 32px;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none; /* Remove underlines */
+    margin: 4px 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+.chipButton:hover {
+    background-color: rgba(255, 255, 255, 0.25); /* Stronger color on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+}
+.chipButton:active {
+    background-color: rgba(255, 255, 255, 0.35); /* Even stronger color when pressed */
+    transform: scale(0.95); /* Slightly smaller when pressed */
+}
+.chipButtonIcon path{
+    /* width: 18px;
+    height: 18px; */
+    fill: green;
+}
+
