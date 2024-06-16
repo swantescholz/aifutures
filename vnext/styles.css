@@ -97,37 +97,6 @@ input[type="range"] {
     font-size: 16px;
     line-height: 140%;
 }
-.shareButton {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
-    cursor: pointer;
-    font-size: 16px;
-    text-align: center;
-}
-.plain-share-btn {
-    background-color: #d3d2d2;
-    color: rgb(0, 0, 0);
-}
-.plain-share-btn:hover {
-    background-color: #dedfe0;
-}
-.twitter-btn {
-    background-color: #1DA1F2; /* Twitter Blue */
-    color: white;
-}
-.twitter-btn:hover {
-    background-color: #1991DA; /* Darker blue on hover */
-}
-.facebook-btn {
-    background-color: #4267B2; /* Facebook Blue */
-    color: white;
-}
-.facebook-btn:hover {
-    background-color: #365899; /* Darker blue on hover */
-}
 .accordion-header {
     background-color: #f1f1f1;
     color: #444;
@@ -238,7 +207,6 @@ input[type='range']{
     color: white;
     padding: 8px 16px;
     text-decoration: none; /* Remove underlines */
-    margin: 4px 2px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
 }
@@ -250,9 +218,14 @@ input[type='range']{
     background-color: rgba(255, 255, 255, 0.35); /* Even stronger color when pressed */
     transform: scale(0.95); /* Slightly smaller when pressed */
 }
-.chipButtonIcon path{
-    /* width: 18px;
-    height: 18px; */
-    fill: green;
+.chipButtonIcon {
+    width: 18px;
+    height: 18px;
 }
-
+.flexChipButtonContainer {
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to wrap to the next row if there isn't enough space */
+    column-gap: 5px;
+    row-gap: 5px;
+    justify-content: left;
+}

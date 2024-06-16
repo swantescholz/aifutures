@@ -333,9 +333,14 @@ document.write(`
 </div>
 <div style="height: 10px;"></div>
 <div class="sliderContainerSectionTitle">Conditional Probabilities</div>
+<div class="flexChipButtonContainer">
 <button class="chipButton" onclick="setSlidersFromString('')">Reset all to 50%</button>
 <button class="chipButton" onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
 <button class="chipButton" onclick="performUndo()"><img src="res/undo.svg" class="chipButtonIcon">Undo</button>
+<button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
+<button onclick="shareOnTwitter()" class="chipButton"><img src="res/twitter.svg" class="chipButtonIcon">Share on Twitter</button>
+<button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
+</div>
 `); // mytodo update my probabilities.
 
 for (let i = 0; i < Q; i++) {
@@ -374,10 +379,7 @@ document.write(`</div>`); // /layoutRow2
 document.write(`
 <div id="shareRow">
 <h1>Share this page:</h1>
-    <button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
-    <button onclick="shareOnTwitter()" class="chipButton"><img src="res/twitter.svg" class="chipButtonIcon">Share on Twitter</button>
-    <button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
-    <button onclick="downloadCharts()" class="chipButton"><img src="res/download.svg" class="chipButtonIcon">Download charts as PNGs</button>
+<button onclick="downloadCharts()" class="chipButton"><img src="res/download.svg" class="chipButtonIcon">Download charts as PNGs</button>
 </div>
 `);
 document.write(`</div>`); // /mainContent
