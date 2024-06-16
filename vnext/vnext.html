@@ -40,8 +40,6 @@ const NODE_HIGHLIGHT_COLOR = 'orange';
 const NODE_HOVER_COLOR = 'rgb(113, 116, 230)';
 
 // IDs
-const idTableTotalForTypeP = 'idTableTotalForTypeP';
-const idTableNodeCellP = 'idTableNodeCellP';
 const idNodeBoxDiv = 'idNodeBoxDiv';
 const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
@@ -317,14 +315,14 @@ document.write(`
     Make more likely paths bolder?
     <label class="switch">
         <input type="checkbox" id="${idBoldPathsCheckbox}" onclick="updateEverything()" checked>
-        <span class="slider round"></span>
+        <span class="slider"></span>
     </label>
 </div>
 <div class="settingContainer"> 
     Make less likely paths transparent?
     <label class="switch">
         <input type="checkbox" id="${idTransparentPathsCheckbox}" onclick="updateEverything()" checked>
-        <span class="slider round"></span>
+        <span class="slider"></span>
     </label>
 </div>
 <div class="settingContainer"> 
@@ -345,9 +343,9 @@ document.write(`
 
 for (let i = 0; i < Q; i++) {
     document.write(`
-<div id=${idSliderContainer+i} onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
-<p style="padding-left: 5px" class="sliderQuestion">${nodes[normalNodesIndices[i]].text.trim()}</p>
-<div class="slider-container-inner"> 
+<div id=${idSliderContainer+i} class="questionAndSliderBox" onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
+<div class="questionSliderLabel">${nodes[normalNodesIndices[i]].text.trim()}</div>
+<div class="sliderPlusPercent">
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
     <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
 </div></div>
