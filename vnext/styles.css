@@ -145,8 +145,7 @@ input:checked + .slider:before {
     transform: translateX(20px);
 }
 input[type='range']{ 
-    background: rgba(255, 0, 0, 0.05);
-    accent-color: #1E90FF; 
+    background: rgba(255, 0, 0, 0.05); 
     cursor: pointer;
 }
 .chipButton {
@@ -204,7 +203,7 @@ input[type='range']{
     align-items: flex-start;
     gap: 4px;
     border-radius: 8px;
-    border: 1.5px solid rgba(255, 255, 255, 0.05);
+    border: 2.5px solid white; /* color gets overridden dynamically */
     width: 100%;
     box-sizing: border-box; 
 }
@@ -222,11 +221,10 @@ input[type='range']{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 2px;
+    gap: 4px;
     box-sizing: border-box; 
 }
 .sliderPercentLabel {
     font-size: 12px;
     font-family: monospace;
-    color: rgba(255, 255, 255, 0.6);
 }

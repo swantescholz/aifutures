@@ -36,8 +36,8 @@ const COLORS = {
     [EXISTENTIAL]: 'rgb(223, 94, 55)',
     [INTERMEDIATE]: 'rgb(168, 191, 171)',
 };
-const NODE_HIGHLIGHT_COLOR = 'orange';
-const NODE_HOVER_COLOR = 'rgb(113, 116, 230)';
+const NODE_HIGHLIGHT_COLOR = '#FF6B00';
+const NODE_HOVER_COLOR = 'rgb(165, 165, 255)';
 
 // IDs
 const idNodeBoxDiv = 'idNodeBoxDiv';
@@ -45,6 +45,7 @@ const idNodeTextDiv = 'idNodeTextDiv';
 const idSliderInput = 'idSliderInput';
 const idSliderNumberBox = 'idSliderNumberBox';
 const idSliderContainer = 'idSliderContainer';
+const idQuestionSliderLabel = 'idQuestionSliderLabel';
 const idMinOpacitySlider = 'idMinOpacitySlider';
 const idEdgeLabel = 'idEdgeLabel';
 const idDetailPlot = 'idDetailPlot';
@@ -252,7 +253,7 @@ document.write(`
         <li>Adjust the sliders to set the conditional probabilities for each question.</li>
         <li>The map and charts will update in real-time to show the probabilities for each node and outcome category.</li>
         <li>Adjust the settings to make more likely paths bolder, or less likely paths transparent. By setting the minimum opacity to zero, impossible branches of the map will become fully transparent.</li>
-        <li>Click on a node to set it as the root node for the probability calculations, i.e. "what happens if we assume we have reached this state?". Click the "START HERE" node to reset the probability mass to the start.</li>
+        <li>Click on a node to set it as the root node for the probability calculations, i.e. "what happens if we assume we have reached this state?". Click the same node again, or the "START HERE" node to reset the probability mass to the start.</li>
         <li>For clicked and hovered-over nodes in the map, the corresponding sliders in the sidebar are highlighted in the same color, and vice-versa.</li>
         <li>The number in each node represents the total probability (in %) to reach this node.</li>
         <li>The numbers on edges represents the the chosen conditional probabilities for each question.</li>
@@ -350,7 +351,7 @@ document.write(`<div class="allSlidersContainer">`);
 for (let i = 0; i < Q; i++) {
     document.write(`
 <div id=${idSliderContainer+i} class="questionAndSliderBox" onmouseover="handleNodeHover(${normalNodesIndices[i]})" onmouseout="handleNodeHover(-1)"> 
-<div class="questionSliderLabel">${nodes[normalNodesIndices[i]].text.trim()}</div>
+<div id=${idQuestionSliderLabel+i} class="questionSliderLabel">${nodes[normalNodesIndices[i]].text.trim()}</div>
 <div class="sliderPlusPercent">
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
     <div class="sliderPercentLabel" id="${idSliderNumberBox+i}"></div>
@@ -529,7 +530,11 @@ canvas.height = CANVAS_HEIGHT;
 const ctx = canvas.getContext('2d');
 
 function handleNodeClick(index) {
-    probabilityRootNodeIndex = index;
+    if (index === probabilityRootNodeIndex) {
+        probabilityRootNodeIndex = 0;
+    } else {
+        probabilityRootNodeIndex = index;
+    }
     updateEverything();
 }
 function handleNodeHover(index) {
@@ -546,9 +551,14 @@ function updateEverything() {
 function updateSidebarStyles() {
     for (let i = 0; i < Q; i++) {
         let sliderContainer = document.getElementById(idSliderContainer + i);
-        // update border color only
-        // sliderContainer
-        // sliderContainer.style.border = '5px solid ' + getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
+        let questionSliderLabel = document.getElementById(idQuestionSliderLabel + i);
+        let sliderInput = document.getElementById(idSliderInput + i);
+        let sliderNumberBox = document.getElementById(idSliderNumberBox + i);
+        sliderContainer.style.borderColor = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'rgba(255, 255, 255, 0.05)');
+        questionSliderLabel.style.color = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
+        sliderInput.style.accentColor = getNodeHighlightColorOrDefault(normalNodesIndices[i], '#1E90FF');
+        sliderNumberBox.style.color = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'rgba(255, 255, 255, 0.6)');
+        idQuestionSliderLabel
     }
 }
 function updateUrl() {
