@@ -151,14 +151,13 @@ input[type='range']{
 .chipButton {
     background-color: rgba(255, 255, 255, 0.1);
     display: flex;
-    padding: 8px 16px;
+    padding: 8px 16px 8px 12px;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     border-radius: 32px;
     border: none;
     color: white;
-    padding: 8px 16px;
     text-decoration: none; /* Remove underlines */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
@@ -172,8 +171,8 @@ input[type='range']{
     transform: scale(0.95); /* Slightly smaller when pressed */
 }
 .chipButtonIcon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 .flexChipButtonContainer {
     margin-bottom: 8px;
