@@ -117,7 +117,13 @@ function interpolate(p, min, max) {
     // p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
     return min + (max - min) * p; // linear interpolation between min and max
 }
-
+function makePaddedPercentString(percentInt) {
+    const percentString = percentInt.toString()
+    return "&nbsp;".repeat(3-percentString.length) + percentString; // pads with unbreakable spaces
+}
+function updateSliderPercentText(slider, textbox) {
+    textbox.innerHTML = "y=" + makePaddedPercentString(slider.value) + "%";
+}
 function copyUrlToClipboard() {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(function() {
@@ -347,7 +353,7 @@ for (let i = 0; i < Q; i++) {
 <div class="questionSliderLabel">${nodes[normalNodesIndices[i]].text.trim()}</div>
 <div class="sliderPlusPercent">
     <input type="range" id="${idSliderInput+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
-    <input type="number" id="${idSliderNumberBox+i}" min="0" max="100" value="${SLIDER_DEFAULT_VALUE}"> 
+    <div class="sliderPercentLabel" id="${idSliderNumberBox+i}"></div>
 </div></div>
 `);
 }
@@ -609,9 +615,9 @@ function updateNodeStyles() {
         nodeText.style.fontWeight = toFontWeight(nodes[i].p, i);
         nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p, i) + 'px';
         nodeBox.style.borderColor = getNodeHighlightColorOrDefault(i, 'black');
-        const probString = Math.round(nodes[i].p*100).toString()
-        const paddedPropString = "&nbsp;".repeat(3-probString.length) + probString;
-        nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPropString}]`);
+        const percent = Math.round(nodes[i].p*100)
+        const paddedPercentString = makePaddedPercentString(percent);
+        nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPercentString}]`);
     }
 }
 function getNodeHighlightColorOrDefault(i, defaultValue) {
@@ -704,7 +710,7 @@ function setSlidersFromString(s) {
         let textbox = document.getElementById(idSliderNumberBox + i);
         const value = parseInt(parts[i]);
         slider.value = isRealNumber(value) ? value : SLIDER_DEFAULT_VALUE;
-        textbox.value = slider.value;
+        updateSliderPercentText(slider, textbox);
     }
     updateEverything();
 }
@@ -761,20 +767,8 @@ window.onload = function () {
         slider.addEventListener('change', function () {
             addCurrentValuesToUndoStack();
         });
-        textbox.addEventListener('change', function () {
-            addCurrentValuesToUndoStack();
-        });
         slider.addEventListener('input', function () {
-            textbox.value = slider.value;
-            updateEverything();
-        });
-        textbox.addEventListener('input', function () {
-            if (textbox.value < 0) {
-                textbox.value = 0;
-            } else if (textbox.value > 100) {
-                textbox.value = 100;
-            }
-            slider.value = textbox.value;
+            updateSliderPercentText(slider, textbox);
             updateEverything();
         });
     }

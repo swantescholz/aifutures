@@ -24,12 +24,6 @@ canvas {
     height: 100%;
     pointer-events: none; /* This allows clicking through the canvas */
 }
-input[type="number"] {
-    margin-left: 5px; /* Adds some space around the inputs */
-}
-input[type="number"] {
-    width: 40px; /* Fixed width for the number inputs */
-}
 input[type="range"] {
     flex-grow: 1; /* Allows the slider to fill the rest of the container */
 }
@@ -208,23 +202,31 @@ input[type='range']{
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 8px;
+    gap: 4px;
     border-radius: 8px;
     border: 1.5px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    box-sizing: border-box; 
 }
 .questionSliderLabel {
-    line-height: 140%;
+    font-size: 12px;
 }
 .sliderPlusPercent {
     display: flex;
     align-items: center;
     gap: 16px;
     justify-content: space-between;
-    align-self: stretch;
+    align-self: stretch; 
 }
 .allSlidersContainer {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 2px;
+    box-sizing: border-box; 
+}
+.sliderPercentLabel {
+    font-size: 12px;
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.6);
 }
