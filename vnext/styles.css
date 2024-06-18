@@ -52,31 +52,31 @@ canvas {
     border: 1.5px solid rgba(255, 255, 255, 0.10);
 }
 .accordion-header {
-    background-color: #f1f1f1;
-    color: #444;
+    background-color: #333;
+    color: #bbb;
     cursor: pointer;
     padding: 18px;
-    width: 100%;
-    max-width: 900px;
+    width: 900px;
     border: none;
     text-align: left;
     outline: none;
     font-size: 20px;
     transition: var(--transition-duration);
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #666;
 }
 .accordion-header:hover {
-    background-color: #ddd;
+    background-color: #666;
 }
 .accordion-content {
+    a {
+        color: #1E90FF; /* Good link color for dark background */
+    }
     padding: 10px 18px;
-    max-width: 880px;
-    background-color: white;
+    width: 900px;
     overflow: hidden;
     transition: max-height var(--transition-duration) ease-out;
-    font-family: Arial, sans-serif;
-    font-size: medium;
-    border: 2px solid black;
+    font-size: 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
 }
 .edge-label {
     position: absolute;
