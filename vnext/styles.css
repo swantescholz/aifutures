@@ -30,10 +30,6 @@ canvas {
     display: flex;
     align-items: flex-start; 
 }
-#plotSection {
-    display: flex;
-    align-items: flex-start; 
-}
 #canvas-container {
     position: relative;
     border-radius: 12px;
@@ -133,6 +129,7 @@ input:checked + .slider:before {
 input[type='range']{ 
     background: rgba(255, 0, 0, 0.05); 
     cursor: pointer;
+    accent-color: #1E90FF; /* Get overridden dynamically for question sliders. */
     flex-grow: 1; /* Allows the slider to fill the rest of the container */
 }
 .chipButton {
@@ -250,4 +247,13 @@ input[type='range']{
     padding: 10px;
     color: #000;
     background-color: red;
+}
+#plotSection {
+    display: flex;
+    align-items: flex-start; 
+}
+.plotContainer {
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    background: #161420;
 }

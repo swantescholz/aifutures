@@ -418,18 +418,25 @@ google.charts.setOnLoadCallback(onChartsLoadCallback);
 
 const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
 const PLOT_PADDING = 50;
+const PLOT_PRIMARY_COLOR = "ddd";
 const COMMON_PLOT_OPTIONS = {
     width: 600,
     height: 800,
+    backgroundColor: '#161420',
     titleTextStyle: {
         fontSize: 18,
         bold: true,
+        color: PLOT_PRIMARY_COLOR,
     },
     bar: {groupWidth: "75%"},
     legend: { position: "none" },
     tooltip: {isHtml: true},
     hAxis: {
-        format: 'percent'
+        format: 'percent',
+        textStyle: {color: PLOT_PRIMARY_COLOR}
+    },
+    vAxis: {
+        textStyle: {color: PLOT_PRIMARY_COLOR}
     },
     annotations: {
         alwaysOutside: false
@@ -460,9 +467,6 @@ function setupTotalPlot() {
     var options = {
         ...COMMON_PLOT_OPTIONS,
         title: "Total Probabilities",
-        hAxis: {
-            format: 'percent'
-        },
         chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
     };
     let millis = null;
@@ -508,9 +512,6 @@ function setupDetailPlot() {
     var options = {
         ...COMMON_PLOT_OPTIONS,
         title: "Detailed Probabilities",
-        hAxis: {
-            format: 'percent',
-        },
         chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
     };
     let millis = null;
