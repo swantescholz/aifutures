@@ -360,8 +360,8 @@ document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; heig
 document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
-    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"></div>
-    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
+    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})"  onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)"></div>
+    <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;" onclick="handleNodeClick(${node.index})">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
 edges.map((edge, index) => {
