@@ -4,6 +4,7 @@
     --corner-radius-l: 16px; /* Chips, "Take action today", Footer */
     --text-color-primary: #FFFFFF; /* White */
     --text-color-secondary: #FFFFFF99; /* 60% white */
+    --transition-duration: 0.4s;
 }
 body, html {
     height: 100%;
@@ -65,7 +66,7 @@ canvas {
     text-align: left;
     outline: none;
     font-size: 20px;
-    transition: 0.4s;
+    transition: var(--transition-duration);
     border-bottom: 1px solid #ccc;
 }
 .accordion-header:hover {
@@ -76,7 +77,7 @@ canvas {
     max-width: 880px;
     background-color: white;
     overflow: hidden;
-    transition: max-height 0.2s ease-out;
+    transition: max-height var(--transition-duration) ease-out;
     font-family: Arial, sans-serif;
     font-size: medium;
     border: 2px solid black;
@@ -108,7 +109,7 @@ canvas {
     right: 0;
     bottom: 0;
     background-color: #FFFFFF1A;
-    transition: .4s;
+    transition: var(--transition-duration);
     border-radius: 22px;
 }
 .slider:before { /* The white circle in the switch. */
@@ -119,7 +120,7 @@ canvas {
     left: 4px;
     bottom: 4px;
     background-color: #FFFFFF99;
-    transition: .4s;
+    transition: var(--transition-duration);
     border-radius: 50%;
 }
 input:checked + .slider {
@@ -146,7 +147,7 @@ input[type='range']{
     color: white;
     text-decoration: none; /* Remove underlines */
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    transition: background-color var(--transition-duration) ease, transform var(--transition-duration) ease; /* Smooth transitions */
 }
 .chipButton:hover {
     background-color: rgba(255, 255, 255, 0.25); /* Stronger color on hover */
@@ -192,7 +193,7 @@ input[type='range']{
     border: 2.5px solid rgba(255, 255, 255, 0.05); /* color gets overridden dynamically */
     width: 100%;
     box-sizing: border-box; 
-    transition: border-color 0.5s ease;
+    transition: border-color var(--transition-duration) ease;
 }
 .questionSliderLabel {
     font-size: 12px;
@@ -234,6 +235,8 @@ input[type='range']{
     box-sizing: border-box;
     opacity: 0;
     cursor: pointer;
+    transition: border-color var(--transition-duration) ease;
+    transition: background-color var(--transition-duration) ease;
 }
 .nodeText {
     position: absolute;
@@ -241,4 +244,5 @@ input[type='range']{
     width: 94px;
     transform: translate(-50%, -50%);
     cursor: pointer;
+    transition: color var(--transition-duration) ease;
 }

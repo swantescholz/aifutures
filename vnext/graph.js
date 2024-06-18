@@ -20,7 +20,7 @@ n;nimplement-alignment1;8;14;Will the first AGI lab implement alignment correctl
 n;nprevent-other-agis;6;14;Will the first AGI prevent other AGIs from appearing?
 n;nimplement-alignment2;6;16;Will all other AGI labs implement alignment correctly?
 i;imultipolar;8;16;Multiple conflicting AGIs exist
-i;ialigned-agi;4;16;Aligned AGI
+i;ialigned-agi;4;16;All AGIs are aligned
 n;nwhole-humanity-aligned;4;18;Is AGI aligned with humanity's interests as a whole?
 g;gagi-utopia2;6;18;AGI utopia
 n;ncontrollers-thoughtful;4;20;Are AGI controllers wise enough to avoid unintended consequences?

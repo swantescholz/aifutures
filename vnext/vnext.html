@@ -20,7 +20,7 @@ const NO = 'n';
 const E100 = '-';
 
 // Node types
-const NORMAL = 'n';
+const QUESTION = 'n';
 const START = 's';
 const GOOD = 'g';
 const AMBIVALENT = 'a';
@@ -28,16 +28,40 @@ const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
 
 // Map from node type to color
-const COLORS = {
-    [NORMAL]: 'rgb(255, 255, 255)',
-    [START]: 'rgb(114, 158, 240)',
-    [GOOD]: 'rgb(97, 247, 115)',
-    [AMBIVALENT]: 'rgb(244, 244, 99)',
-    [EXISTENTIAL]: 'rgb(223, 94, 55)',
-    [INTERMEDIATE]: 'rgb(168, 191, 171)',
+const NODE_NORMAL_BORDER_COLORS = {
+    [QUESTION]: '#8C31FF',
+    [START]: '#1C1067',
+    [GOOD]: '#31FF5E',
+    [AMBIVALENT]: '#FFDE31',
+    [EXISTENTIAL]: '#FF3131',
+    [INTERMEDIATE]: '#1C1067',
 };
-const NODE_HIGHLIGHT_COLOR = '#FF8B38';
-const NODE_HOVER_COLOR = 'rgb(165, 165, 255)';
+const NODE_NORMAL_BACKGROUND_COLORS = {
+    [QUESTION]: '#5024ff',
+    [START]: '#1d1067',
+    [GOOD]: '#0a3313',
+    [AMBIVALENT]: '#332c0a',
+    [EXISTENTIAL]: '#330a0a',
+    [INTERMEDIATE]: '#1d1067',
+};
+const NODE_HOVER_BORDER_COLORS = {
+    [QUESTION]: '#8C31FF',
+    [START]: '#1C1067',
+    [GOOD]: '#31FF5E',
+    [AMBIVALENT]: '#FFDE31',
+    [EXISTENTIAL]: '#FF3131',
+    [INTERMEDIATE]: '#1C1067',
+};
+const NODE_HOVER_BACKGROUND_COLORS = {
+    [QUESTION]: '#5024ff4d',
+    [START]: '#1d10674d',
+    [GOOD]: '#22b241',
+    [AMBIVALENT]: '#b29b21',
+    [EXISTENTIAL]: '#b22222',
+    [INTERMEDIATE]: '1d10674d',
+};
+const NODE_SELECTED_PRIMARY_COLOR = '#FF8B38';
+const QUESTION_NODE_HOVER_BORDER_COLOR = 'rgb(165, 165, 255)';
 
 // IDs
 const idNodeBoxDiv = 'idNodeBoxDiv';
@@ -203,7 +227,7 @@ let nodeId2index = new Map();
 nodes.map((node, index) => {
     nodeId2index.set(node.id, index);
 });
-const normalNodesIndices = nodes.filter(n => n.type === NORMAL).map(n => n.index);
+const normalNodesIndices = nodes.filter(n => n.type === QUESTION).map(n => n.index);
 
 class Edge {
     constructor(line) {
@@ -360,7 +384,7 @@ document.write(`<div id="canvas-container" style="width: ${CANVAS_WIDTH}px; heig
 document.write(`<canvas></canvas>`);
 nodes.map(node => {
     document.write(`
-    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${COLORS[node.type]}" onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)"></div>
+    <div id="${idNodeBoxDiv+node.index}" class="nodeBox" style="top: ${node.y}px; left: ${node.x}px; background-color:${NODE_NORMAL_BACKGROUND_COLORS[node.type]}" onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)"></div>
     <div id="${idNodeTextDiv+node.index}" class="nodeText" style="top: ${node.y}px; left: ${node.x}px;"  onclick="handleNodeClick(${node.index})" onmouseover="handleNodeHover(${node.index})" onmouseout="handleNodeHover(-1)">${node.formatTextForNode()} [&nbsp;&nbsp;&nbsp;]</div>
     `);
 });
@@ -455,7 +479,7 @@ function setupTotalPlot() {
         data.removeRows(0, data.getNumberOfRows());
         CHART_CATEGORIES.map((categoy, i) => {
             const p = millis[i]/1000.0;
-            data.addRow([OUTCOME_HEADERS[i], p, COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
+            data.addRow([OUTCOME_HEADERS[i], p, NODE_NORMAL_BACKGROUND_COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
         });
         totalChart.draw(data, options);
     }
@@ -506,7 +530,7 @@ function setupDetailPlot() {
                 p: node.p,
                 text: node.formatTextForPlots(),
                 typeIndex: CHART_CATEGORIES.indexOf(node.type) !== -1 ? CHART_CATEGORIES.indexOf(node.type) : 9,
-                color: COLORS[node.type],
+                color: NODE_NORMAL_BACKGROUND_COLORS[node.type],
             };
         });
         sortByKey(newData, d => -d.p);
@@ -554,11 +578,10 @@ function updateSidebarStyles() {
         let questionSliderLabel = document.getElementById(idQuestionSliderLabel + i);
         let sliderInput = document.getElementById(idSliderInput + i);
         let sliderNumberBox = document.getElementById(idSliderNumberBox + i);
-        sliderContainer.style.borderColor = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'rgba(255, 255, 255, 0.05)');
-        questionSliderLabel.style.color = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'white');
-        sliderInput.style.accentColor = getNodeHighlightColorOrDefault(normalNodesIndices[i], '#1E90FF');
-        sliderNumberBox.style.color = getNodeHighlightColorOrDefault(normalNodesIndices[i], 'rgba(255, 255, 255, 0.6)');
-        idQuestionSliderLabel
+        sliderContainer.style.borderColor = getQuestionBoxHighlightColorOrDefault(i, 'rgba(255, 255, 255, 0.05)');
+        questionSliderLabel.style.color = getQuestionBoxHighlightColorOrDefault(i, 'white');
+        sliderInput.style.accentColor = getQuestionBoxHighlightColorOrDefault(i, '#1E90FF');
+        sliderNumberBox.style.color = getQuestionBoxHighlightColorOrDefault(i, 'rgba(255, 255, 255, 0.6)');
     }
 }
 function updateUrl() {
@@ -624,20 +647,44 @@ function updateNodeStyles() {
         nodeText.style.opacity = toNodeAlpha(nodes[i].p, i);
         nodeText.style.fontWeight = toFontWeight(nodes[i].p, i);
         nodeBox.style.borderWidth = toNodeBorderWidth(nodes[i].p, i) + 'px';
-        nodeBox.style.borderColor = getNodeHighlightColorOrDefault(i, 'black');
+        nodeBox.style.borderColor = getNodeBorderColor(i);
+        nodeBox.style.backgroundColor = getNodeBackgroundColor(i);
+        nodeText.style.color = getNodeTextColor(i);
         const percent = Math.round(nodes[i].p*100)
         const paddedPercentString = makePaddedPercentString(percent);
         nodeText.innerHTML = nodeText.innerHTML.replace(/\[.*\]/, `[${paddedPercentString}]`);
     }
 }
-function getNodeHighlightColorOrDefault(i, defaultValue) {
+function getNodeBorderColor(i) {
     if (i == probabilityRootNodeIndex) {
-        return NODE_HIGHLIGHT_COLOR;
+        return NODE_SELECTED_PRIMARY_COLOR;
     } else if (i == hoveredNodeIndex) {
-        return NODE_HOVER_COLOR;
-    } else {
-        return defaultValue;
+        return NODE_HOVER_BORDER_COLORS[nodes[i].type];
     }
+    return NODE_NORMAL_BORDER_COLORS[nodes[i].type];
+}
+function getNodeBackgroundColor(i) {
+    if (i == probabilityRootNodeIndex) {
+        return NODE_SELECTED_PRIMARY_COLOR + '26'; // 26 is 15% opacity
+    } else if (i == hoveredNodeIndex) {
+        return NODE_HOVER_BACKGROUND_COLORS[nodes[i].type];
+    }
+    return NODE_NORMAL_BACKGROUND_COLORS[nodes[i].type];
+}
+function getNodeTextColor(i) {
+    if (i == probabilityRootNodeIndex) {
+        return NODE_SELECTED_PRIMARY_COLOR;
+    }
+    return 'white';
+}
+function getQuestionBoxHighlightColorOrDefault(questionIndex, defaultValue) {
+    const i = normalNodesIndices[questionIndex];
+    if (i == probabilityRootNodeIndex) {
+        return NODE_SELECTED_PRIMARY_COLOR;
+    } else if (i == hoveredNodeIndex) {
+        return QUESTION_NODE_HOVER_BORDER_COLOR;
+    }
+    return defaultValue;
 }
 function drawArrows() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
