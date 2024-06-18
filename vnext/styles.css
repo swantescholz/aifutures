@@ -24,9 +24,6 @@ canvas {
     height: 100%;
     pointer-events: none; /* This allows clicking through the canvas */
 }
-input[type="range"] {
-    flex-grow: 1; /* Allows the slider to fill the rest of the container */
-}
 #mainContent {}
 #layoutRow1 {
     display: flex;
@@ -54,11 +51,6 @@ input[type="range"] {
     margin: 0 0;
     border-radius: var(--corner-radius-m);
     border: 1.5px solid rgba(255, 255, 255, 0.10);
-}
-#shareRow {
-    display: flex;
-    align-items: center; 
-    margin: 10px;
 }
 .accordion-header {
     background-color: #f1f1f1;
@@ -153,6 +145,7 @@ input:checked + .slider:before {
 input[type='range']{ 
     background: rgba(255, 0, 0, 0.05); 
     cursor: pointer;
+    flex-grow: 1; /* Allows the slider to fill the rest of the container */
 }
 .chipButton {
     background-color: rgba(255, 255, 255, 0.1);
@@ -208,9 +201,10 @@ input[type='range']{
     align-items: flex-start;
     gap: 4px;
     border-radius: 8px;
-    border: 2.5px solid white; /* color gets overridden dynamically */
+    border: 2.5px solid rgba(255, 255, 255, 0.05); /* color gets overridden dynamically */
     width: 100%;
     box-sizing: border-box; 
+    transition: border-color 0.5s ease;
 }
 .questionSliderLabel {
     font-size: 12px;
@@ -220,7 +214,7 @@ input[type='range']{
     align-items: center;
     gap: 16px;
     justify-content: space-between;
-    align-self: stretch; 
+    align-self: stretch;
 }
 .allSlidersContainer {
     display: flex;
@@ -232,4 +226,12 @@ input[type='range']{
 .sliderPercentLabel {
     font-size: 12px;
     font-family: monospace;
+}
+#shareRow {
+    display: flex;
+    align-items: center; 
+    margin: 20px;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
 }

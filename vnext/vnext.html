@@ -342,9 +342,6 @@ document.write(`
 <button class="chipButton" onclick="setSlidersFromString('')">Reset to 50%</button>
 <button class="chipButton" onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
 <button class="chipButton" onclick="performUndo()"><img src="res/undo.svg" class="chipButtonIcon">Undo</button>
-<button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
-<button onclick="shareOnTwitter()" class="chipButton"><img src="res/twitter.svg" class="chipButtonIcon">Share on Twitter</button>
-<button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
 </div>
 `); // mytodo update my probabilities.
 document.write(`<div class="allSlidersContainer">`);
@@ -383,7 +380,10 @@ document.write(`</div>`); // /layoutRow2
 // ================================ SHARING / EXPORT
 document.write(`
 <div id="shareRow">
-<h1>Share this page:</h1>
+<div>Share this page:</div>
+<button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
+<button onclick="shareOnTwitter()" class="chipButton"><img src="res/twitter.svg" class="chipButtonIcon">Share on Twitter</button>
+<button onclick="shareOnFacebook()" class="chipButton"><img src="res/facebook.svg" class="chipButtonIcon">Share on Facebook</button>
 <button onclick="downloadCharts()" class="chipButton"><img src="res/download.svg" class="chipButtonIcon">Download charts as PNGs</button>
 </div>
 `);
