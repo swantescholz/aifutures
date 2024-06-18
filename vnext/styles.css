@@ -38,15 +38,20 @@ input[type="range"] {
 }
 #canvas-container {
     position: relative;
-    border: 1px solid black;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    background: #161420;
     flex-shrink: 0;
-    margin: 5px;
+    margin: 0px 12px;
+    font-size: 10px;
+    font-family: monospace;
+    line-height: 110%;
 }
 #controlPanel { /* Settings & Probabilities sliders */
     width: 350px;
     padding: 16px;
     flex-shrink: 0;
-    margin: 5px 0;
+    margin: 0 0;
     border-radius: var(--corner-radius-m);
     border: 1.5px solid rgba(255, 255, 255, 0.10);
 }
@@ -92,6 +97,7 @@ input[type="range"] {
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     opacity: 0;
+    cursor: pointer;
 }
 .nodeText {
     position: absolute;

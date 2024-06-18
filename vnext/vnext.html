@@ -36,7 +36,7 @@ const COLORS = {
     [EXISTENTIAL]: 'rgb(223, 94, 55)',
     [INTERMEDIATE]: 'rgb(168, 191, 171)',
 };
-const NODE_HIGHLIGHT_COLOR = '#FF6B00';
+const NODE_HIGHLIGHT_COLOR = '#FF8B38';
 const NODE_HOVER_COLOR = 'rgb(165, 165, 255)';
 
 // IDs
@@ -105,13 +105,13 @@ function toNodeBorderWidth(p, i) {
     return 3;
 }
 function toFontWeight(p, i) {
-    // if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
-    //     return 900;
-    // }
-    // if (document.getElementById(idBoldPathsCheckbox).checked) {
-    //     return Math.round(interpolate(p, 100, 900));
-    // }
-    return 800;
+    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+        return 900;
+    }
+    if (document.getElementById(idBoldPathsCheckbox).checked) {
+        return Math.round(interpolate(p, 100, 900));
+    }
+    return 600;
 }
 function interpolate(p, min, max) {
     p = clamp01(p);
@@ -339,7 +339,7 @@ document.write(`
 <div style="height: 10px;"></div>
 <div class="sliderContainerSectionTitle">Conditional Probabilities</div>
 <div class="flexChipButtonContainer">
-<button class="chipButton" onclick="setSlidersFromString('')">Reset all to 50%</button>
+<button class="chipButton" onclick="setSlidersFromString('')">Reset to 50%</button>
 <button class="chipButton" onclick="setSlidersFromString('${AUTHORS_ESTIMATES}')">Author's estimates</button>
 <button class="chipButton" onclick="performUndo()"><img src="res/undo.svg" class="chipButtonIcon">Undo</button>
 <button onclick="copyUrlToClipboard()" class="chipButton"><img src="res/url.svg" class="chipButtonIcon">Copy URL to Clipboard</button>
