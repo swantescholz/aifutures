@@ -60,7 +60,7 @@ const NODE_HOVER_BACKGROUND_COLORS = {
     [GOOD]: '#22b241',
     [AMBIVALENT]: '#b29b21',
     [EXISTENTIAL]: '#b22222',
-    [INTERMEDIATE]: '1d10674d',
+    [INTERMEDIATE]: '#1d10674d',
 };
 
 // IDs
@@ -129,13 +129,13 @@ function toNodeBorderWidth(p, i) {
     return 2;
 }
 function toFontWeight(p, i) {
-    if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
-        return 900;
-    }
-    if (document.getElementById(idBoldPathsCheckbox).checked) {
-        return Math.round(interpolate(p, 100, 900));
-    }
-    return 600;
+    // if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
+    //     return 900;
+    // }
+    // if (document.getElementById(idBoldPathsCheckbox).checked) {
+    //     return Math.round(interpolate(p, 100, 900));
+    // }
+    return 400;
 }
 function interpolate(p, min, max) {
     p = clamp01(p);
@@ -352,7 +352,7 @@ document.write(`
 <div class="settingContainer"> 
     Make less likely paths transparent?
     <label class="switch">
-        <input type="checkbox" id="${idTransparentPathsCheckbox}" onclick="updateEverything()" checked>
+        <input type="checkbox" id="${idTransparentPathsCheckbox}" onclick="updateEverything()">
         <span class="slider"></span>
     </label>
 </div>
@@ -674,6 +674,8 @@ function getNodeBackgroundColor(i) {
 function getNodeTextColor(i) {
     if (i == probabilityRootNodeIndex) {
         return NODE_SELECTED_PRIMARY_COLOR;
+    } else if (i == hoveredNodeIndex && nodes[i].type === QUESTION) {
+        return NODE_HOVER_BORDER_COLORS[nodes[i].type];
     }
     return 'white';
 }
