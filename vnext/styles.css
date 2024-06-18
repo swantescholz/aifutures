@@ -78,9 +78,6 @@ canvas {
     font-size: medium;
     border: 2px solid black;
 }
-.plot {
-    border: 1px solid black;
-}
 .edge-label {
     position: absolute;
     text-align: center;
@@ -251,9 +248,12 @@ input[type='range']{
 #plotSection {
     display: flex;
     align-items: flex-start; 
+    margin-top: 10px;
+    gap: 12px;
 }
 .plotContainer {
     border-radius: 12px;
     border: 1.5px solid rgba(255, 255, 255, 0.10);
     background: #161420;
+    padding: 10px;
 }
