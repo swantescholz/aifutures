@@ -234,11 +234,11 @@ input[type='range']{
     box-sizing: border-box;
     opacity: 0;
     cursor: pointer;
-    pointer-events: none;
 }
 .nodeText {
     position: absolute;
     text-align: center;
     width: 94px;
     transform: translate(-50%, -50%);
+    cursor: pointer;
 }
