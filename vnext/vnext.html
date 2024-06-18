@@ -505,7 +505,6 @@ function setupDetailPlot() {
     data.addColumn({type: 'string', role: 'style'});
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
-
     var options = {
         ...COMMON_PLOT_OPTIONS,
         title: "Detailed Probabilities",
@@ -514,7 +513,6 @@ function setupDetailPlot() {
         },
         chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
     };
-
     let millis = null;
     function shouldIncludeNode(node) {
         return node.p > 0 && (CHART_CATEGORIES.includes(node.type) || INTERMEDIATE_NODES_FOR_CHARTS.includes(node.id));
@@ -535,7 +533,6 @@ function setupDetailPlot() {
         });
         sortByKey(newData, d => -d.p);
         sortByKey(newData, d => d.typeIndex);
-
         data.removeRows(0, data.getNumberOfRows());
         newData.map(d => {
             data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipHtmlString(d.text, d.p)]);
@@ -543,7 +540,6 @@ function setupDetailPlot() {
         detailChart.draw(data, options);
     }
     updateChartData(); // draw initially.
-
     // Update plots at a regular interval.
     setInterval(updateChartData, CHART_UPDATE_INTERVAL);
 }
@@ -552,7 +548,6 @@ const canvas = document.querySelector('canvas');
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 const ctx = canvas.getContext('2d');
-
 function handleNodeClick(index) {
     if (index === probabilityRootNodeIndex) {
         probabilityRootNodeIndex = 0;
@@ -728,24 +723,19 @@ function drawArrows() {
         x2 -= 1;
         y1 -= 1;
         y2 -= 1;
-
         updateEdgeLabel(i, x1, y1, x2, y2);
-
         dx = parseFloat(x2) - x1; // calculate line offset for arrow head
         dy = parseFloat(y2) - y1;
         let dlen = Math.sqrt(dx*dx + dy*dy);
         dx = dx / dlen * toArrowHeadLen(edge.p) * 0.866;
         dy = dy / dlen * toArrowHeadLen(edge.p) * 0.866;
-        
-        // Draw the line
-        ctx.beginPath();
+        ctx.beginPath(); // Draw the line
         ctx.moveTo(x1 - canvas.offsetLeft, y1 - canvas.offsetTop);
         // Retract the line end a bit so that it doesn't overlap the arrow head.
         ctx.lineTo(x2 - canvas.offsetLeft - dx, y2 - canvas.offsetTop - dy);
         ctx.strokeStyle = `rgba(30,144,255, ${toAlpha(edge.p)}`;
         ctx.lineWidth = toArrowWidth(edge.p);
         ctx.stroke();
-
         // Draw the arrow head
         const angle = Math.atan2(y2 - y1, x2 - x1);
         const headlen = toArrowHeadLen(edge.p);  // length of head in pixels
@@ -813,10 +803,8 @@ function performUndo() {
         setSlidersFromString(undoStack[undoStack.length-1]);
     }
 }
-
 let urlParam = new URLSearchParams(window.location.search).get('p') || '';
 setSlidersFromString(urlParam);
-
 window.onload = function () {
     // Slider listeners.
     for (let i = 0; i < Q; i++) {
