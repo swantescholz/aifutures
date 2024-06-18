@@ -29,6 +29,7 @@ canvas {
 #layoutRow1 {
     display: flex;
     align-items: flex-start; 
+    margin-top: 10px;
 }
 #canvas-container {
     position: relative;
@@ -62,7 +63,9 @@ canvas {
     outline: none;
     font-size: 20px;
     transition: var(--transition-duration);
+    border-radius: var(--corner-radius-m);
     border-bottom: 1px solid #666;
+    box-sizing: border-box;
 }
 .accordion-header:hover {
     background-color: #666;
@@ -76,7 +79,9 @@ canvas {
     overflow: hidden;
     transition: max-height var(--transition-duration) ease-out;
     font-size: 14px;
+    border-radius: var(--corner-radius-m);
     border: 1.5px solid rgba(255, 255, 255, 0.10);
+    box-sizing: border-box;
 }
 .edge-label {
     position: absolute;
