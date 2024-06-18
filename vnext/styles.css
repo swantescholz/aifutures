@@ -182,8 +182,8 @@ input[type='range']{
     justify-content: left;
 }
 .sliderContainerSectionTitle {
-    font-size: 28px;
-    margin: 12px 0px;
+    font-size: 20px;
+    margin: 0px 0px 10px 0px;
 }
 .settingContainer {
     margin: 8px 0px;
@@ -192,6 +192,7 @@ input[type='range']{
     gap: 20px;
     align-items: center;
     align-self: stretch;
+    font-size: 16px;
 }
 .questionAndSliderBox {
     display: flex;

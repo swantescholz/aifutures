@@ -693,7 +693,7 @@ function drawArrows() {
         ctx.moveTo(x1 - canvas.offsetLeft, y1 - canvas.offsetTop);
         // Retract the line end a bit so that it doesn't overlap the arrow head.
         ctx.lineTo(x2 - canvas.offsetLeft - dx, y2 - canvas.offsetTop - dy);
-        ctx.strokeStyle = `rgba(0, 0, 0, ${toAlpha(edge.p)}`;
+        ctx.strokeStyle = `rgba(30,144,255, ${toAlpha(edge.p)}`;
         ctx.lineWidth = toArrowWidth(edge.p);
         ctx.stroke();
 
@@ -706,7 +706,7 @@ function drawArrows() {
         ctx.lineTo(x2 - canvas.offsetLeft - headlen * Math.cos(angle + Math.PI / 6), y2 - canvas.offsetTop - headlen * Math.sin(angle + Math.PI / 6));
         ctx.lineTo(x2 - canvas.offsetLeft, y2 - canvas.offsetTop);
         ctx.closePath();
-        ctx.fillStyle = `rgba(0, 0, 0, ${toAlpha(edge.p)}`;
+        ctx.fillStyle = `rgba(30,144,255, ${toAlpha(edge.p)}`;
         ctx.fill();
     }
 }
