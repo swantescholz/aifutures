@@ -241,8 +241,13 @@ input[type='range']{
 .nodeText {
     position: absolute;
     text-align: center;
-    width: 94px;
+    width: 98px;
     transform: translate(-50%, -50%);
     cursor: pointer;
     transition: color var(--transition-duration) ease;
+}
+.plotTooltip {
+    padding: 10px;
+    color: #000;
+    background-color: red;
 }

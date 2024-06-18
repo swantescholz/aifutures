@@ -28,13 +28,15 @@ const EXISTENTIAL = 'e';
 const INTERMEDIATE = 'i';
 
 // Map from node type to color
+const NODE_SELECTED_PRIMARY_COLOR = '#FF8B38';
+const QUESTION_NODE_HOVER_BORDER_COLOR = 'rgb(165, 165, 255)';
 const NODE_NORMAL_BORDER_COLORS = {
     [QUESTION]: '#8C31FF',
-    [START]: '#1C1067',
+    [START]: '#36238b',
     [GOOD]: '#31FF5E',
     [AMBIVALENT]: '#FFDE31',
     [EXISTENTIAL]: '#FF3131',
-    [INTERMEDIATE]: '#1C1067',
+    [INTERMEDIATE]: '#36238b',
 };
 const NODE_NORMAL_BACKGROUND_COLORS = {
     [QUESTION]: '#5024ff',
@@ -45,12 +47,12 @@ const NODE_NORMAL_BACKGROUND_COLORS = {
     [INTERMEDIATE]: '#1d1067',
 };
 const NODE_HOVER_BORDER_COLORS = {
-    [QUESTION]: '#8C31FF',
-    [START]: '#1C1067',
+    [QUESTION]: QUESTION_NODE_HOVER_BORDER_COLOR,
+    [START]: '#36238b',
     [GOOD]: '#31FF5E',
     [AMBIVALENT]: '#FFDE31',
     [EXISTENTIAL]: '#FF3131',
-    [INTERMEDIATE]: '#1C1067',
+    [INTERMEDIATE]: '#36238b',
 };
 const NODE_HOVER_BACKGROUND_COLORS = {
     [QUESTION]: '#5024ff4d',
@@ -60,8 +62,6 @@ const NODE_HOVER_BACKGROUND_COLORS = {
     [EXISTENTIAL]: '#b22222',
     [INTERMEDIATE]: '1d10674d',
 };
-const NODE_SELECTED_PRIMARY_COLOR = '#FF8B38';
-const QUESTION_NODE_HOVER_BORDER_COLOR = 'rgb(165, 165, 255)';
 
 // IDs
 const idNodeBoxDiv = 'idNodeBoxDiv';
@@ -78,7 +78,7 @@ const idBoldPathsCheckbox = 'boldPathsCheckbox';
 const idTransparentPathsCheckbox = 'transparentPathsCheckbox';
 
 // Other constants
-const NODE_LABEL_POSITION_FACTOR=0.3;
+const NODE_LABEL_POSITION_FACTOR=0.38;
 const XSCALE = 1.0;
 const SLIDER_DEFAULT_VALUE = 50;
 const OUTCOME_TYPES = [EXISTENTIAL, AMBIVALENT, GOOD];
@@ -123,10 +123,10 @@ function toNodeBorderWidth(p, i) {
     if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
         return 5;
     }
-    if (document.getElementById(idBoldPathsCheckbox).checked) {
-        return Math.round(interpolate(p, 1, 5));
-    }
-    return 3;
+    // if (document.getElementById(idBoldPathsCheckbox).checked) {
+    //     return Math.round(interpolate(p, 1, 5));
+    // }
+    return 2;
 }
 function toFontWeight(p, i) {
     if (i === probabilityRootNodeIndex || i === hoveredNodeIndex) {
@@ -440,8 +440,8 @@ const COMMON_PLOT_OPTIONS = {
     },
 };
 
-function toPlotTooltipString(text, p) {
-    return `<div style="padding: 10px;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
+function toPlotTooltipHtmlString(text, p) {
+    return `<div style="plotTooltip"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
 }
 function onChartsLoadCallback() {
     setupTotalPlot();
@@ -479,7 +479,7 @@ function setupTotalPlot() {
         data.removeRows(0, data.getNumberOfRows());
         CHART_CATEGORIES.map((categoy, i) => {
             const p = millis[i]/1000.0;
-            data.addRow([OUTCOME_HEADERS[i], p, NODE_NORMAL_BACKGROUND_COLORS[categoy], toPercentString(p), toPlotTooltipString(OUTCOME_HEADERS[i], p)]);
+            data.addRow([OUTCOME_HEADERS[i], p, NODE_NORMAL_BORDER_COLORS[categoy], toPercentString(p), toPlotTooltipHtmlString(OUTCOME_HEADERS[i], p)]);
         });
         totalChart.draw(data, options);
     }
@@ -530,7 +530,7 @@ function setupDetailPlot() {
                 p: node.p,
                 text: node.formatTextForPlots(),
                 typeIndex: CHART_CATEGORIES.indexOf(node.type) !== -1 ? CHART_CATEGORIES.indexOf(node.type) : 9,
-                color: NODE_NORMAL_BACKGROUND_COLORS[node.type],
+                color: NODE_NORMAL_BORDER_COLORS[node.type],
             };
         });
         sortByKey(newData, d => -d.p);
@@ -538,7 +538,7 @@ function setupDetailPlot() {
 
         data.removeRows(0, data.getNumberOfRows());
         newData.map(d => {
-            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipString(d.text, d.p)]);
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipHtmlString(d.text, d.p)]);
         });
         detailChart.draw(data, options);
     }
