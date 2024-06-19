@@ -448,7 +448,7 @@ const COMMON_PLOT_OPTIONS = {
 };
 
 function toPlotTooltipHtmlString(text, p) {
-    return `<div style="plotTooltip"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
+    return `<div style="padding: 10px; background: #ddd;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
 }
 function onChartsLoadCallback() {
     setupTotalPlot();

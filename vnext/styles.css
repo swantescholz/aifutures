@@ -246,10 +246,9 @@ input[type='range']{
     cursor: pointer;
     transition: color var(--transition-duration) ease;
 }
-.plotTooltip {
-    padding: 10px;
-    color: #0f0;
-    background-color: red;
+.google-visualization-tooltip {
+    color: #333;
+    font-family: sans-serif;
 }
 #plotSection {
     display: flex;
