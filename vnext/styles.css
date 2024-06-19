@@ -2,6 +2,7 @@
     --corner-radius-s: 8px; /* Nodes, FAQ boxes,  */
     --corner-radius-m: 12px; /* Containers, plot bars */
     --corner-radius-l: 16px; /* Chips, "Take action today", Footer */
+    --primary-color: #1E90FF; /* Blue that looks good on black */
     --text-color-primary: #FFFFFF; /* White */
     --text-color-secondary: #FFFFFF99; /* 60% white */
     --transition-duration: 0.4s;
@@ -16,6 +17,9 @@ body, html {
     font-size: 16px;
     color: var(--text-color-primary);
     background-color: #0C0A16;
+}
+a {
+    color: var(--primary-color);
 }
 canvas {
     position: absolute;
@@ -71,9 +75,6 @@ canvas {
     background-color: #666;
 }
 .accordion-content {
-    a {
-        color: #1E90FF; /* Good link color for dark background */
-    }
     padding: 10px 18px;
     width: 900px;
     overflow: hidden;
@@ -122,7 +123,7 @@ canvas {
     border-radius: 50%;
 }
 input:checked + .slider {
-    background-color: #1E90FF;
+    background-color: var(--primary-color);
 }
 input:checked + .slider:before {
     background-color: white;
@@ -131,7 +132,7 @@ input:checked + .slider:before {
 input[type='range']{ 
     background: rgba(255, 0, 0, 0.05); 
     cursor: pointer;
-    accent-color: #1E90FF; /* Get overridden dynamically for question sliders. */
+    accent-color: var(--primary-color); /* Get overridden dynamically for question sliders. */
     flex-grow: 1; /* Allows the slider to fill the rest of the container */
 }
 .chipButton {
@@ -247,7 +248,7 @@ input[type='range']{
 }
 .plotTooltip {
     padding: 10px;
-    color: #000;
+    color: #0f0;
     background-color: red;
 }
 #plotSection {
