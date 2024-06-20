@@ -436,7 +436,7 @@ const COMMON_CHART_OPTIONS = {
     height: 600,
     backgroundColor: '#161420',
     titleTextStyle: {
-        fontSize: 18,
+        fontSize: 16,
         bold: true,
         color: CHART_PRIMARY_COLOR,
     },
@@ -467,6 +467,9 @@ function onChartsLoadCallback() {
     setupDetailChart();
     setupIntermediateChart();
 }
+function getChartTitleSuffix() {
+    return (nodes[probabilityRootNodeIndex].type == START) ? '' : " (for subgraph)";
+}
 var totalChart = null;
 function setupTotalChart() {
     totalChart = new google.visualization.BarChart(document.getElementById(idTotalChart));
@@ -479,7 +482,6 @@ function setupTotalChart() {
 
     var options = {
         ...COMMON_CHART_OPTIONS,
-        title: "Total Probabilities",
         chartArea: { width: '65%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
     };
     let millis = null;
@@ -492,6 +494,7 @@ function setupTotalChart() {
             return; // no changes
         }
         millis = newMillis;
+        options.title = "Total Probabilities" + getChartTitleSuffix();
 
         data.removeRows(0, data.getNumberOfRows());
         CHART_CATEGORIES.map((categoy, i) => {
@@ -517,7 +520,6 @@ function setupDetailChart() {
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
     var options = {
         ...COMMON_CHART_OPTIONS,
-        title: "Detailed Probabilities",
         chartArea: { width: '50%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
     };
     let millis = null;
@@ -530,6 +532,7 @@ function setupDetailChart() {
             return; // no changes
         }
         millis = newMillis;
+        options.title = "Detailed Probabilities" + getChartTitleSuffix();
         const newData = nodes.filter(shouldIncludeNode).map(node => {
             return {
                 p: node.p,
@@ -561,7 +564,6 @@ function setupIntermediateChart() {
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
     var options = {
         ...COMMON_CHART_OPTIONS,
-        title: "Intermediate Probabilities",
         chartArea: { width: '50%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
     };
     let millis = null;
@@ -574,6 +576,7 @@ function setupIntermediateChart() {
             return; // no changes
         }
         millis = newMillis;
+        options.title = "Intermediate Probabilities" + getChartTitleSuffix();
         const newData = nodes.filter(shouldIncludeNode).map(node => {
             return {
                 p: node.p,
