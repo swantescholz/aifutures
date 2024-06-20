@@ -72,8 +72,9 @@ const idSliderContainer = 'idSliderContainer';
 const idQuestionSliderLabel = 'idQuestionSliderLabel';
 const idMinOpacitySlider = 'idMinOpacitySlider';
 const idEdgeLabel = 'idEdgeLabel';
-const idDetailPlot = 'idDetailPlot';
-const idTotalPlot = 'idTotalPlot';
+const idTotalChart = 'idTotalChart';
+const idDetailChart = 'idDetailChart';
+const idIntermediateChart = 'idIntermediateChart';
 const idBoldPathsCheckbox = 'boldPathsCheckbox';
 const idTransparentPathsCheckbox = 'transparentPathsCheckbox';
 
@@ -88,7 +89,7 @@ const CANVAS_PADDINGW = 100;
 const CANVAS_PADDINGH = 50;
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 1200;
-const CHART_UPDATE_INTERVAL = 1000;
+const CHART_UPDATE_INTERVAL_MS = 1000;
 
 // ================================ UTILS
 const clamp01 = x => Math.min(1.0, Math.max(0.0, x));
@@ -142,6 +143,12 @@ function interpolate(p, min, max) {
     // p = Math.sqrt(1.0-(1-p)*(1-p)); // fast-in circle function
     return min + (max - min) * p; // linear interpolation between min and max
 }
+function sortByKey(array, keyFunction) {
+    return array.sort((a, b) => {
+        var x = keyFunction(a); var y = keyFunction(b);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
 function makePaddedPercentString(percentInt) {
     const percentString = percentInt.toString()
     return "&nbsp;".repeat(3-percentString.length) + percentString; // pads with unbreakable spaces
@@ -174,6 +181,9 @@ function downloadCharts() {
     downloadLink.href = detailChart.getImageURI();
     downloadLink.download = 'detailed_probabilities.png';
     downloadLink.click();
+    downloadLink.href = intermediateChart.getImageURI();
+    downloadLink.download = 'intermediate_probabilities.png';
+    downloadLink.click();
     document.body.removeChild(downloadLink);
 }
 function getUrl() {
@@ -198,7 +208,7 @@ class Node {
         this.text = parts[4];
         this.p = 1.0; // total probability flow going into this node.
     }
-    formatTextForPlots() {
+    formatTextForCharts() {
         return this.text.replace(/\|/g, ' ');
     }
     formatTextForNode() {
@@ -289,6 +299,7 @@ document.write(`
         <li>The future is notoriously difficult to predict. I'm not an AI expert, and I'm sure this map is flawed in various ways. Any outcome probabilities computed here are highly speculative, and should be taken with a grain of salt.</li>
         <li>Consider this map as a reflection and conversation tool for exploring your own assumptions, and comparing them with those from a person with a different intuition about the future of AI.</li>
         <li>The sliders represent <b>conditional</b> probabilities, i.e. the probability for the given question assuming we reached the corresponding node in the graph.</li>
+        <li>I'm planning to publish updated/improved version of this site. <a href="https://swantescholz.github.io/aidoom" target="_blank">swantescholz.github.io/aidoom</a> will always forward you to the newest version.</li>
     </ul>
 </div>
 <div id="glossary">
@@ -395,9 +406,10 @@ document.write(`</div>`); // /canvas-container
 document.write(`</div>`); // /layoutRow1
 // ================================ ROW 2
 document.write(`
-<div id="plotSection">
-<div id="${idTotalPlot}" class="plotContainer"></div>
-<div id="${idDetailPlot}" class="plotContainer"></div>
+<div id="chartSection">
+<div id="${idTotalChart}" class="chartContainer"></div>
+<div id="${idDetailChart}" class="chartContainer"></div>
+<div id="${idIntermediateChart}" class="chartContainer"></div>
 </div>
 `);
 document.write(`</div>`); // /layoutRow2
@@ -412,31 +424,31 @@ document.write(`
 </div>
 `);
 document.write(`</div>`); // /mainContent
-// ================================ PLOTS
+// ================================ CHARTS
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(onChartsLoadCallback);
 
 const CHART_CATEGORIES = [EXISTENTIAL, AMBIVALENT, GOOD];
-const PLOT_PADDING = 50;
-const PLOT_PRIMARY_COLOR = "ddd";
-const COMMON_PLOT_OPTIONS = {
-    width: 600,
-    height: 800,
+const CHART_PADDING = 50;
+const CHART_PRIMARY_COLOR = "ddd";
+const COMMON_CHART_OPTIONS = {
+    width: 400,
+    height: 600,
     backgroundColor: '#161420',
     titleTextStyle: {
         fontSize: 18,
         bold: true,
-        color: PLOT_PRIMARY_COLOR,
+        color: CHART_PRIMARY_COLOR,
     },
     bar: {groupWidth: "75%"},
     legend: { position: "none" },
     tooltip: {isHtml: true},
     hAxis: {
         format: 'percent',
-        textStyle: {color: PLOT_PRIMARY_COLOR}
+        textStyle: {color: CHART_PRIMARY_COLOR}
     },
     vAxis: {
-        textStyle: {color: PLOT_PRIMARY_COLOR}
+        textStyle: {color: CHART_PRIMARY_COLOR}
     },
     annotations: {
         alwaysOutside: false
@@ -447,16 +459,17 @@ const COMMON_PLOT_OPTIONS = {
     },
 };
 
-function toPlotTooltipHtmlString(text, p) {
+function toChartTooltipHtmlString(text, p) {
     return `<div style="padding: 10px; background: #ddd;"><b>${text}</b><br>Probability: <b>${toPercentString(p)}</b></div>`;
 }
 function onChartsLoadCallback() {
-    setupTotalPlot();
-    setupDetailPlot();
+    setupTotalChart();
+    setupDetailChart();
+    setupIntermediateChart();
 }
 var totalChart = null;
-function setupTotalPlot() {
-    totalChart = new google.visualization.BarChart(document.getElementById(idTotalPlot));
+function setupTotalChart() {
+    totalChart = new google.visualization.BarChart(document.getElementById(idTotalChart));
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Outcome');
     data.addColumn('number', 'Probability');
@@ -465,9 +478,9 @@ function setupTotalPlot() {
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
 
     var options = {
-        ...COMMON_PLOT_OPTIONS,
+        ...COMMON_CHART_OPTIONS,
         title: "Total Probabilities",
-        chartArea: { width: '65%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+        chartArea: { width: '65%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
     };
     let millis = null;
 
@@ -483,26 +496,19 @@ function setupTotalPlot() {
         data.removeRows(0, data.getNumberOfRows());
         CHART_CATEGORIES.map((categoy, i) => {
             const p = millis[i]/1000.0;
-            data.addRow([OUTCOME_HEADERS[i], p, NODE_NORMAL_BORDER_COLORS[categoy], toPercentString(p), toPlotTooltipHtmlString(OUTCOME_HEADERS[i], p)]);
+            data.addRow([OUTCOME_HEADERS[i], p, NODE_NORMAL_BORDER_COLORS[categoy], toPercentString(p), toChartTooltipHtmlString(OUTCOME_HEADERS[i], p)]);
         });
         totalChart.draw(data, options);
     }
     updateChartData(); // draw initially.
 
-    // Update plots at a regular interval.
-    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
-}
-
-function sortByKey(array, keyFunction) {
-    return array.sort((a, b) => {
-        var x = keyFunction(a); var y = keyFunction(b);
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
+    // Update charts at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL_MS);
 }
 
 var detailChart = null;
-function setupDetailPlot() {
-    detailChart = new google.visualization.BarChart(document.getElementById(idDetailPlot));
+function setupDetailChart() {
+    detailChart = new google.visualization.BarChart(document.getElementById(idDetailChart));
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Outcome');
     data.addColumn('number', 'Probability');
@@ -510,13 +516,13 @@ function setupDetailPlot() {
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
     var options = {
-        ...COMMON_PLOT_OPTIONS,
+        ...COMMON_CHART_OPTIONS,
         title: "Detailed Probabilities",
-        chartArea: { width: '50%', top: PLOT_PADDING, bottom: PLOT_PADDING, right: PLOT_PADDING},
+        chartArea: { width: '50%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
     };
     let millis = null;
     function shouldIncludeNode(node) {
-        return node.p > 0 && (CHART_CATEGORIES.includes(node.type) || INTERMEDIATE_NODES_FOR_CHARTS.includes(node.id));
+        return node.p > 0 && CHART_CATEGORIES.includes(node.type);
     }
     function updateChartData() {
         const newMillis = nodes.map(node => Math.round(node.p*1000));
@@ -527,7 +533,7 @@ function setupDetailPlot() {
         const newData = nodes.filter(shouldIncludeNode).map(node => {
             return {
                 p: node.p,
-                text: node.formatTextForPlots(),
+                text: node.formatTextForCharts(),
                 typeIndex: CHART_CATEGORIES.indexOf(node.type) !== -1 ? CHART_CATEGORIES.indexOf(node.type) : 9,
                 color: NODE_NORMAL_BORDER_COLORS[node.type],
             };
@@ -536,13 +542,55 @@ function setupDetailPlot() {
         sortByKey(newData, d => d.typeIndex);
         data.removeRows(0, data.getNumberOfRows());
         newData.map(d => {
-            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toPlotTooltipHtmlString(d.text, d.p)]);
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toChartTooltipHtmlString(d.text, d.p)]);
         });
         detailChart.draw(data, options);
     }
     updateChartData(); // draw initially.
-    // Update plots at a regular interval.
-    setInterval(updateChartData, CHART_UPDATE_INTERVAL);
+    // Update charts at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL_MS);
+}
+var intermediateChart= null;
+function setupIntermediateChart() {
+    intermediateChart = new google.visualization.BarChart(document.getElementById(idIntermediateChart));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Node');
+    data.addColumn('number', 'Probability');
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({role: 'tooltip', type: 'string', p: {html: true}});
+    var options = {
+        ...COMMON_CHART_OPTIONS,
+        title: "Intermediate Probabilities",
+        chartArea: { width: '50%', top: CHART_PADDING, bottom: CHART_PADDING, right: CHART_PADDING},
+    };
+    let millis = null;
+    function shouldIncludeNode(node) {
+        return node.p > 0 && node.type === INTERMEDIATE;
+    }
+    function updateChartData() {
+        const newMillis = nodes.map(node => Math.round(node.p*1000));
+        if (JSON.stringify(newMillis) === JSON.stringify(millis)) {
+            return; // no changes
+        }
+        millis = newMillis;
+        const newData = nodes.filter(shouldIncludeNode).map(node => {
+            return {
+                p: node.p,
+                text: node.formatTextForCharts(),
+                color: NODE_NORMAL_BORDER_COLORS[node.type],
+            };
+        });
+        sortByKey(newData, d => -d.p);
+        data.removeRows(0, data.getNumberOfRows());
+        newData.map(d => {
+            data.addRow([d.text, d.p, d.color, toPercentString(d.p), toChartTooltipHtmlString(d.text, d.p)]);
+        });
+        intermediateChart.draw(data, options);
+    }
+    updateChartData(); // draw initially.
+    // Update charts at a regular interval.
+    setInterval(updateChartData, CHART_UPDATE_INTERVAL_MS);
 }
 // ================================ FUNCTIONS / LOGIC
 const canvas = document.querySelector('canvas');

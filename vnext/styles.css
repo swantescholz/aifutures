@@ -1,6 +1,6 @@
 :root {
     --corner-radius-s: 8px; /* Nodes, FAQ boxes,  */
-    --corner-radius-m: 12px; /* Containers, plot bars */
+    --corner-radius-m: 12px; /* Containers, chart bars */
     --corner-radius-l: 16px; /* Chips, "Take action today", Footer */
     --primary-color: #1E90FF; /* Blue that looks good on black */
     --text-color-primary: #FFFFFF; /* White */
@@ -250,13 +250,13 @@ input[type='range']{
     color: #333;
     font-family: sans-serif;
 }
-#plotSection {
+#chartSection {
     display: flex;
     align-items: flex-start; 
     margin-top: 10px;
     gap: 12px;
 }
-.plotContainer {
+.chartContainer {
     border-radius: 12px;
     border: 1.5px solid rgba(255, 255, 255, 0.10);
     background: #161420;
