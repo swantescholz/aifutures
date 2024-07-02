@@ -1,0 +1,267 @@
+:root {
+    --corner-radius-s: 8px; /* Nodes, FAQ boxes,  */
+    --corner-radius-m: 12px; /* Containers, chart bars */
+    --corner-radius-l: 16px; /* Chips, "Take action today", Footer */
+    --primary-color: #1E90FF; /* Blue that looks good on black */
+    --text-color-primary: #FFFFFF; /* White */
+    --text-color-secondary: #FFFFFF99; /* 60% white */
+    --transition-duration: 0.4s;
+}
+body, html {
+    height: 100%;
+    margin: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;    
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    font-size: 16px;
+    color: var(--text-color-primary);
+    background-color: #0C0A16;
+}
+strong, b {
+    font-weight: 800;
+}
+a {
+    color: var(--primary-color);
+}
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* This allows clicking through the canvas */
+}
+#mainContent {}
+#layoutRow1 {
+    display: flex;
+    align-items: flex-start; 
+    margin-top: 10px;
+}
+#canvas-container {
+    position: relative;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    flex-shrink: 0;
+    margin: 0px 12px;
+    font-size: 10px;
+    font-family: monospace;
+    line-height: 110%;
+    background: #161420;    
+    background-image: radial-gradient(circle, rgba(187,187,187,0.05) 2px, transparent 1px);
+    background-size: 16px 16px;
+}
+#controlPanel { /* Settings & Probabilities sliders */
+    width: 350px;
+    padding: 16px;
+    flex-shrink: 0;
+    margin: 0 0;
+    border-radius: var(--corner-radius-m);
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+}
+.accordion-header {
+    background-color: #333;
+    color: #bbb;
+    cursor: pointer;
+    padding: 18px;
+    width: 900px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    transition: var(--transition-duration);
+    border-radius: var(--corner-radius-m);
+    border-bottom: 1px solid #666;
+    box-sizing: border-box;
+}
+.accordion-header:hover {
+    background-color: #666;
+}
+.accordion-content {
+    padding: 10px 18px;
+    width: 900px;
+    overflow: hidden;
+    transition: max-height var(--transition-duration) ease-out;
+    font-size: 14px;
+    border-radius: var(--corner-radius-m);
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    box-sizing: border-box;
+}
+.edge-label {
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider { /* The toggle background */
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFFFFF1A;
+    transition: var(--transition-duration);
+    border-radius: 22px;
+}
+.slider:before { /* The white circle in the switch. */
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #FFFFFF99;
+    transition: var(--transition-duration);
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+input:checked + .slider:before {
+    background-color: white;
+    transform: translateX(20px);
+}
+input[type='range']{ 
+    background: rgba(255, 0, 0, 0.05); 
+    cursor: pointer;
+    accent-color: var(--primary-color); /* Get overridden dynamically for question sliders. */
+    flex-grow: 1; /* Allows the slider to fill the rest of the container */
+}
+.chipButton {
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    padding: 8px 16px 8px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 32px;
+    border: none;
+    color: white;
+    text-decoration: none; /* Remove underlines */
+    cursor: pointer;
+    transition: background-color var(--transition-duration) ease, transform var(--transition-duration) ease; /* Smooth transitions */
+}
+.chipButton:hover {
+    background-color: rgba(255, 255, 255, 0.25); /* Stronger color on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+}
+.chipButton:active {
+    background-color: rgba(255, 255, 255, 0.35); /* Even stronger color when pressed */
+    transform: scale(0.95); /* Slightly smaller when pressed */
+}
+.chipButtonIcon {
+    width: 16px;
+    height: 16px;
+}
+.flexChipButtonContainer {
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to wrap to the next row if there isn't enough space */
+    column-gap: 5px;
+    row-gap: 5px;
+    justify-content: left;
+}
+.sliderContainerSectionTitle {
+    font-size: 20px;
+    margin: 0px 0px 10px 0px;
+}
+.settingContainer {
+    margin: 8px 0px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    align-self: stretch;
+    font-size: 16px;
+}
+.questionAndSliderBox {
+    display: flex;
+    padding: 4px 8px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2px;
+    border-radius: 8px;
+    border: 2.5px solid rgba(255, 255, 255, 0.05); /* color gets overridden dynamically */
+    width: 100%;
+    box-sizing: border-box; 
+    transition: border-color var(--transition-duration) ease;
+}
+.questionSliderLabel {
+    font-size: 12px;
+    line-height: 110%;
+}
+.sliderPlusPercent {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+    align-self: stretch;
+}
+.allSlidersContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    box-sizing: border-box; 
+}
+.sliderPercentLabel {
+    font-size: 12px;
+    font-family: monospace;
+}
+#shareRow {
+    display: flex;
+    align-items: center; 
+    margin: 20px;
+    padding-bottom: 20px;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.nodeBox {
+    position: absolute;
+    border-radius: 8px;
+    border: 1.5px solid black;
+    width: 110px;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    opacity: 0;
+    cursor: pointer;
+    transition: border-color var(--transition-duration) ease;
+    transition: background-color var(--transition-duration) ease;
+}
+.nodeText {
+    position: absolute;
+    text-align: center;
+    width: 98px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: color var(--transition-duration) ease;
+}
+.google-visualization-tooltip {
+    color: #333;
+    font-family: sans-serif;
+}
+#chartSection {
+    display: flex;
+    align-items: flex-start; 
+    margin-top: 10px;
+    gap: 12px;
+}
+.chartContainer {
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    background: #161420;
+    padding: 10px;
+}
