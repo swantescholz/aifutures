@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Map of AI Doom</title>
+<title>Map of AI Futures</title>
 <link rel="stylesheet" type="text/css" href="styles.css">
 <link href='https://fonts.googleapis.com/css?family=Plus Jakarta Sans' rel='stylesheet'>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -188,7 +188,6 @@ function downloadCharts() {
 }
 function getUrl() {
     return encodeURIComponent(window.location.href);
-    // return encodeURIComponent('https://swantescholz.github.io/aidoom');
 }
 function mycheck(value, message) {
     if (value === null || value === undefined) {
@@ -271,7 +270,7 @@ edges.map((edge, eIndex) => {
 if (!DEV_MODE) {
 document.write(`
 <div id="mainContent">
-<h1>Map of AI Doom (<a href="https://swantescholz.github.io/aidoom" target="_blank">swantescholz.github.io/aidoom</a>)</h1>
+<h1>Map of AI Futures (<a href="https://swantescholz.github.io/aifutures">swantescholz.github.io/aifutures</a>)</h1>
 <button class="accordion-header">Hide Instructions</button>
 <div class="accordion-content">
 <div id="background">
@@ -299,7 +298,7 @@ document.write(`
         <li>The future is notoriously difficult to predict. I'm not an AI expert, and I'm sure this map is flawed in various ways. Any outcome probabilities computed here are highly speculative, and should be taken with a grain of salt.</li>
         <li>Consider this map as a reflection and conversation tool for exploring your own assumptions, and comparing them with those from a person with a different intuition about the future of AI.</li>
         <li>The sliders represent <b>conditional</b> probabilities, i.e. the probability for the given question assuming we reached the corresponding node in the graph.</li>
-        <li>I'm planning to publish updated/improved version of this site. <a href="https://swantescholz.github.io/aidoom" target="_blank">swantescholz.github.io/aidoom</a> will always forward you to the newest version.</li>
+        <li>I'm planning to publish updated/improved version of this site. <a href="https://swantescholz.github.io/aifutures" target="_blank">swantescholz.github.io/aifutures</a> will always forward you to the newest version.</li>
     </ul>
 </div>
 <div id="glossary">
@@ -329,7 +328,7 @@ document.write(`
 </div>
 <div id="authors">
     <h4>Authors</h4>
-    <p>Swante Scholz, 2024. <a href="https://github.com/swantescholz/aidoom/" target="_blank">Code repository (Github)</a>. Feel free to modify and share this code. It is released under the Unlicense.</p>
+    <p>Swante Scholz, 2024. <a href="https://github.com/swantescholz/aifutures/" target="_blank">Code repository (Github)</a>. Feel free to modify and share this code. It is released under the Unlicense.</p>
     <p>All views expressed here are my own.</p>
 </div>
 </div>`);
