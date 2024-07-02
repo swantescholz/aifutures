@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Map of AI Futures</title>
 <link rel="stylesheet" type="text/css" href="styles.css">
-<link href='https://fonts.googleapis.com/css?family=Plus Jakarta Sans' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&display=swap" rel="stylesheet">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="graph.js"></script>
 </head>
@@ -31,7 +31,7 @@ const INTERMEDIATE = 'i';
 const NODE_SELECTED_PRIMARY_COLOR = '#FF8B38';
 const QUESTION_NODE_HOVER_BORDER_COLOR = 'rgb(165, 165, 255)';
 const NODE_NORMAL_BORDER_COLORS = {
-    [QUESTION]: '#8C31FF',
+    [QUESTION]: '#8C31AA',
     [START]: '#36238b',
     [GOOD]: '#31FF5E',
     [AMBIVALENT]: '#FFDE31',
@@ -39,7 +39,7 @@ const NODE_NORMAL_BORDER_COLORS = {
     [INTERMEDIATE]: '#36238b',
 };
 const NODE_NORMAL_BACKGROUND_COLORS = {
-    [QUESTION]: '#5024ff',
+    [QUESTION]: '#51244d',
     [START]: '#1d1067',
     [GOOD]: '#0a3313',
     [AMBIVALENT]: '#332c0a',
@@ -55,7 +55,7 @@ const NODE_HOVER_BORDER_COLORS = {
     [INTERMEDIATE]: '#36238b',
 };
 const NODE_HOVER_BACKGROUND_COLORS = {
-    [QUESTION]: '#5024ff4d',
+    [QUESTION]: '#51244d4d',
     [START]: '#1d10674d',
     [GOOD]: '#22b241',
     [AMBIVALENT]: '#b29b21',
@@ -310,6 +310,7 @@ document.write(`
         <li><strong>Existential Catastrophe</strong>: A catastrophic event that would lead to the destruction of humanity's long-term potential, such as human extinction or the permanent collapse of civilization.</li>
         <li><strong>Ambivalent Outcome</strong>: An outcome that could lead to both a good or a bad future for humanity, or to a morally ambiguous situation.</li>
         <li><strong>Good Outcome</strong>: An outcome that would lead to a future that is good for humanity by most common moral perspectives.</li>
+        <li><strong>Permanent</strong>: For the purposes of this flowchart, let's define "permanent" as "for the next 100 years".</li>
     </ul>
 </div>
 <div id="further-reading">

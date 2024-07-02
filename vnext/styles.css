@@ -18,6 +18,9 @@ body, html {
     color: var(--text-color-primary);
     background-color: #0C0A16;
 }
+strong, b {
+    font-weight: 800;
+}
 a {
     color: var(--primary-color);
 }
